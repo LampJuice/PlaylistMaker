@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background_menu"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:paddingHorizontal="@dimen/main_padding"
+        >
+
+        <ImageView
+            android:id="@+id/search_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/back"
+            android:paddingHorizontal="2dp"
+            android:src="@drawable/ic_back_arrow_24" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/ys_display_medium"
+            android:padding="@dimen/main_padding"
+
+            android:text="@string/search"
+            android:textAllCaps="false"
+            android:textColor="@color/text_menu"
+            android:textSize="@dimen/text_main"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="4dp"
+        android:layout_marginHorizontal="@dimen/main_padding"
+        android:orientation="horizontal">
+
+        <EditText
+            android:id="@+id/search_edittext"
+            android:layout_width="match_parent"
+            android:layout_height="36dp"
+            android:autofillHints=""
+            android:background="@drawable/search_edittext_background"
+            android:drawableStart="@drawable/ic_search_16"
+            android:drawablePadding="10dp"
+            android:fontFamily="@font/ys_display_regular"
+            android:hint="@string/search"
+            android:inputType="text"
+            android:lines="1"
+            android:maxLength="16"
+            android:paddingStart="@dimen/secondary_padding"
+            android:paddingEnd="@dimen/secondary_padding"
+            android:textColor="@color/black"
+            android:textColorHint="@color/search_hint"
+            android:textSize="@dimen/text_regular" />
+
+        <ImageView
+            android:id="@+id/clear_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical|end"
+            android:layout_marginEnd="12dp"
+
+            android:contentDescription="@string/clear"
+            android:src="@drawable/ic_close_16"
+            android:visibility="invisible" />
+    </FrameLayout>
+
+</LinearLayout>
