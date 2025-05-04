@@ -33,7 +33,7 @@
             android:textStyle="bold" />
     </LinearLayout>
 
-    <LinearLayout
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/main_padding"
@@ -41,10 +41,8 @@
 
         <EditText
             android:id="@+id/search_edittext"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="36dp"
-            android:layout_marginEnd="-28dp"
-            android:layout_weight="1"
             android:autofillHints=""
             android:background="@drawable/search_edittext_background"
             android:drawableStart="@drawable/ic_search_16"
@@ -64,11 +62,11 @@
             android:id="@+id/clear_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginEnd="@dimen/main_padding"
+            android:layout_gravity="end"
+            android:layout_margin="9dp"
             android:contentDescription="@string/clear"
             android:src="@drawable/ic_close_16"
             android:visibility="invisible" />
-    </LinearLayout>
+    </FrameLayout>
 
 </LinearLayout>
