@@ -21,8 +21,7 @@ class SearchActivity : AppCompatActivity() {
         val backButton = findViewById<ImageView>(R.id.search_back)
         val editText = findViewById<EditText>(R.id.search_edittext)
         val clearButton = findViewById<ImageView>(R.id.clear_text)
-        val inputMethodManager =
-            getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+
 
         backButton.setOnClickListener { finish() }
         editText.addTextChangedListener(object : TextWatcher {
@@ -36,30 +35,24 @@ class SearchActivity : AppCompatActivity() {
             }
 
             override fun afterTextChanged(s: Editable?) {
-
-
             }
 
         })
+
+        val inputMethodManager =
+            getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+
         clearButton.setOnClickListener {
             editText.text?.clear()
             inputMethodManager?.hideSoftInputFromWindow(editText.windowToken, 0)
             editText.clearFocus()
         }
-
     }
-
-
 
     override fun onSaveInstanceState(outState: Bundle) {
         val editText = findViewById<EditText>(R.id.search_edittext)
         super.onSaveInstanceState(outState)
         outState.putString(SEARCH_STRING, editText.text.toString())
-
-    }
-    companion object{
-        const val SEARCH_STRING = "SEARCH_STRING"
-        const val STRING_DEF = ""
     }
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
@@ -68,6 +61,11 @@ class SearchActivity : AppCompatActivity() {
 
         searchString = savedInstanceState.getString(SEARCH_STRING, STRING_DEF)
         editText.setText(searchString)
+    }
+
+    companion object{
+        private const val SEARCH_STRING = "SEARCH_STRING"
+        private const val STRING_DEF = ""
     }
 
 }
