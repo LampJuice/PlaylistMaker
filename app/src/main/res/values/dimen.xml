@@ -6,4 +6,5 @@
     <dimen name="icon_padding">8dp</dimen>
     <dimen name="margin_supp">2dp</dimen>
     <dimen name="main_padding">16dp</dimen>
+    <dimen name="secondary_padding">14dp</dimen>
 </resources>
