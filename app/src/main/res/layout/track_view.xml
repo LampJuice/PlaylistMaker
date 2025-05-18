@@ -39,8 +39,9 @@
                 />
 
             <LinearLayout
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:orientation="horizontal"
                 >
 
                 <TextView
@@ -48,7 +49,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     style="@style/text_nav"
-                    android:maxWidth="230dp"
+                    android:maxWidth="170dp"
+                    android:ellipsize="end"
                     tools:text = "band nameband nameband nameband nameband name"
                     />
 
@@ -60,10 +62,9 @@
 
                 <TextView
                     android:id="@+id/sourceTime"
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    tools:text = "time"
+                    tools:text = "ti231123me"
                     style="@style/text_nav"/>
             </LinearLayout>
         </LinearLayout>

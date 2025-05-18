@@ -11,4 +11,5 @@
     <dimen name="margin_supp">2dp</dimen>
     <dimen name="main_padding">16dp</dimen>
     <dimen name="secondary_padding">14dp</dimen>
+    <dimen name="round_corners_cover">2dp</dimen>
 </resources>

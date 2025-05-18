@@ -18,7 +18,6 @@
         <item name="android:textColor">@color/ic_tint_2</item>
         <item name="android:textFontWeight">500</item>
         <item name="android:lines">1</item>
-        <item name="android:ellipsize">end</item>
 
     </style>
     <style name="button_main" parent="Widget.MaterialComponents.Button.UnelevatedButton">
