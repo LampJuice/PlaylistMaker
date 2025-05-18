@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/card_margin_hor"
+        android:layout_marginVertical="@dimen/card_margin_vert"
+        android:layout_gravity="end"
+        android:gravity="center">
+
+        <ImageView
+            android:id="@+id/sourceImg"
+            android:layout_width="@dimen/album_size"
+            android:layout_height="@dimen/album_size"
+            android:src="@drawable/placeholder_45"
+            android:layout_marginEnd="@dimen/card_margin_vert"
+            />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="start"
+            android:layout_weight="1"
+            >
+
+            <TextView
+                android:id="@+id/sourceName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/settings_option"
+                android:lines="1"
+                android:ellipsize="end"
+                tools:text = "Sweet Child O'MineSweet Child O'MineSweet Child O'Mine"
+                />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                >
+
+                <TextView
+                    android:id="@+id/sourceBand"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    style="@style/text_nav"
+                    android:maxWidth="230dp"
+                    tools:text = "band nameband nameband nameband nameband name"
+                    />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:src="@drawable/ic_dot_13"/>
+
+                <TextView
+                    android:id="@+id/sourceTime"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    tools:text = "time"
+                    style="@style/text_nav"/>
+            </LinearLayout>
+        </LinearLayout>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end|center"
+            android:src="@drawable/ic_user_agreement_24"/>
+
+    </LinearLayout>
+
+</FrameLayout>
