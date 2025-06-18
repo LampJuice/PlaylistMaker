@@ -3,8 +3,13 @@
     <dimen name="text_main">22sp</dimen>
     <dimen name="text_regular">16sp</dimen>
     <dimen name="text_nav">12sp</dimen>
+    <dimen name="text_card_2">11sp</dimen>
+    <dimen name="card_margin_hor">13dp</dimen>
+    <dimen name="card_margin_vert">8dp</dimen>
+    <dimen name="album_size">45dp</dimen>
     <dimen name="icon_padding">8dp</dimen>
     <dimen name="margin_supp">2dp</dimen>
     <dimen name="main_padding">16dp</dimen>
     <dimen name="secondary_padding">14dp</dimen>
+    <dimen name="round_corners_cover">2dp</dimen>
 </resources>
