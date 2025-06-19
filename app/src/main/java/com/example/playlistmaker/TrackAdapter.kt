@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 
 class TrackAdapter(
-    private val tracks: List<Track>
+    private val tracks: List<Song>
     ): RecyclerView.Adapter<TrackViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TrackViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.track_view, parent, false)
@@ -18,5 +18,7 @@ class TrackAdapter(
 
     override fun onBindViewHolder(holder: TrackViewHolder, position: Int) {
         holder.bind(tracks[position])
+
     }
+
 }
