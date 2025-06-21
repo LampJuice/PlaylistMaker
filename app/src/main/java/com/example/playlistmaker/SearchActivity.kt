@@ -18,9 +18,17 @@ import retrofit2.Call
 import retrofit2.Response
 
 
+
 class SearchActivity : AppCompatActivity() {
-    private var searchString: String = STRING_DEF
+    var searchString: String = STRING_DEF
     private var lastSearch: String?= null
+
+    private val songs = mutableListOf<Song>()
+    private val trackAdapter = TrackAdapter(songs)
+    private lateinit var noNetworkPlaceholder: LinearLayout
+    private lateinit var noResultPlaceholder: LinearLayout
+    private lateinit var recyclerView: RecyclerView
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,8 +38,10 @@ class SearchActivity : AppCompatActivity() {
         val backButton = findViewById<ImageView>(R.id.search_back)
         val editText = findViewById<EditText>(R.id.search_edittext)
         val clearButton = findViewById<ImageView>(R.id.clear_text)
-        val songs = mutableListOf<Song>()
-        val trackAdapter = TrackAdapter(songs)
+
+
+
+
 
 
         backButton.setOnClickListener { finish() }
@@ -49,8 +59,9 @@ class SearchActivity : AppCompatActivity() {
             }
         })
 
-        val noResultPlaceholder = findViewById<LinearLayout>(R.id.noResultsPlaceholder)
-        val noNetworkPlaceholder = findViewById<LinearLayout>(R.id.noNetworkPlaceholder)
+
+        noResultPlaceholder = findViewById<LinearLayout>(R.id.noResultsPlaceholder)
+        noNetworkPlaceholder = findViewById<LinearLayout>(R.id.noNetworkPlaceholder)
         val refreshButton = findViewById<Button>(R.id.renew_button)
         val inputMethodManager =
             getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
@@ -65,41 +76,11 @@ class SearchActivity : AppCompatActivity() {
             editText.clearFocus()
         }
 
-        val recyclerView = findViewById<RecyclerView>(R.id.recyclerView)
+        recyclerView = findViewById<RecyclerView>(R.id.recyclerView)
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.adapter = trackAdapter
 
-        fun performSearch(query: String){
-            RetrofitSettings.iTunesAPI.searchSong(query).enqueue(object : retrofit2.Callback<SearchResponse> {
-                override fun onResponse(call : Call<SearchResponse>, response : Response<SearchResponse>){
-                    if (response.isSuccessful) {
-                        val newSongs = response.body()?.results.orEmpty()
-                        songs.clear()
-                        songs.addAll(newSongs)
-                        trackAdapter.notifyDataSetChanged()
-                        if (songs.isEmpty()) {
-                            noResultPlaceholder.visibility = View.VISIBLE
-                            recyclerView.visibility = View.GONE
-                        } else {
-                            noResultPlaceholder.visibility = View.GONE
-                            recyclerView.visibility = View.VISIBLE
-                        }
 
-                    } else {
-                        recyclerView.visibility = View.GONE
-                        noResultPlaceholder.visibility = View.GONE
-                        noNetworkPlaceholder.visibility = View.VISIBLE
-                    }
-                }
-
-                override fun onFailure(call: Call<SearchResponse>, t: Throwable) {
-                    t.printStackTrace()
-                    recyclerView.visibility = View.GONE
-                    noResultPlaceholder.visibility = View.GONE
-                    noNetworkPlaceholder.visibility = View.VISIBLE
-                }
-            })
-        }
 
         refreshButton.setOnClickListener {
             noNetworkPlaceholder.visibility = View.GONE
@@ -118,6 +99,40 @@ class SearchActivity : AppCompatActivity() {
             }
             false
         }
+
+
+    }
+
+    private fun performSearch(query: String){
+        RetrofitSettings.iTunesAPI.searchSong(query).enqueue(object : retrofit2.Callback<SearchResponse> {
+            override fun onResponse(call : Call<SearchResponse>, response : Response<SearchResponse>){
+                if (response.isSuccessful) {
+                    val newSongs = response.body()?.results.orEmpty()
+                    songs.clear()
+                    songs.addAll(newSongs)
+                    trackAdapter.notifyDataSetChanged()
+                    if (songs.isEmpty()) {
+                        noResultPlaceholder.visibility = View.VISIBLE
+                        recyclerView.visibility = View.GONE
+                    } else {
+                        noResultPlaceholder.visibility = View.GONE
+                        recyclerView.visibility = View.VISIBLE
+                    }
+
+                } else {
+                    recyclerView.visibility = View.GONE
+                    noResultPlaceholder.visibility = View.GONE
+                    noNetworkPlaceholder.visibility = View.VISIBLE
+                }
+            }
+
+            override fun onFailure(call: Call<SearchResponse>, t: Throwable) {
+                t.printStackTrace()
+                recyclerView.visibility = View.GONE
+                noResultPlaceholder.visibility = View.GONE
+                noNetworkPlaceholder.visibility = View.VISIBLE
+            }
+        })
     }
 
     override fun onSaveInstanceState(outState: Bundle) {

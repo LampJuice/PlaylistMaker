@@ -84,8 +84,8 @@
         android:layout_marginTop="110dp">
 
         <ImageView
-            android:layout_width="120dp"
-            android:layout_height="120dp"
+            android:layout_width="@dimen/placeholder_size"
+            android:layout_height="@dimen/placeholder_size"
             android:src="@drawable/ic_no_result"/>
 
         <TextView
@@ -109,8 +109,8 @@
         android:layout_marginTop="110dp">
 
         <ImageView
-            android:layout_width="120dp"
-            android:layout_height="120dp"
+            android:layout_width="@dimen/placeholder_size"
+            android:layout_height="@dimen/placeholder_size"
             android:src="@drawable/ic_no_network"/>
 
         <TextView
