@@ -14,21 +14,25 @@ import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.button.MaterialButton
 import retrofit2.Call
 import retrofit2.Response
 
 
-
 class SearchActivity : AppCompatActivity() {
     var searchString: String = STRING_DEF
-    private var lastSearch: String?= null
+    private var lastSearch: String? = null
 
+    private lateinit var searchHistory: SearchHistory
     private val songs = mutableListOf<Song>()
-    private val trackAdapter = TrackAdapter(songs)
+    private val trackAdapter = TrackAdapter(songs) { song -> searchHistory.saveTrack(song) }
+    private val historyAdapter =
+        TrackAdapter(mutableListOf()) { song -> searchHistory.saveTrack(song) }
     private lateinit var noNetworkPlaceholder: LinearLayout
     private lateinit var noResultPlaceholder: LinearLayout
+    private lateinit var historyHint: LinearLayout
     private lateinit var recyclerView: RecyclerView
-
+    private lateinit var recyclerViewHistory: RecyclerView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,27 +42,73 @@ class SearchActivity : AppCompatActivity() {
         val backButton = findViewById<ImageView>(R.id.search_back)
         val editText = findViewById<EditText>(R.id.search_edittext)
         val clearButton = findViewById<ImageView>(R.id.clear_text)
+        historyHint = findViewById<LinearLayout>(R.id.history_hint)
 
+        val clearHistoryButton = findViewById<MaterialButton>(R.id.clear_history_button)
+        val sharedPreferences = getSharedPreferences("search_history", MODE_PRIVATE)
+        searchHistory = SearchHistory(sharedPreferences)
 
-
-
-
+        clearHistoryButton.setOnClickListener {
+            searchHistory.clearHistory()
+            historyAdapter.updateData(emptyList())
+            historyHint.visibility = View.GONE
+        }
 
         backButton.setOnClickListener { finish() }
+
+        editText.setOnFocusChangeListener { view, hasFocus ->
+            if (hasFocus && editText.text.isEmpty()) {
+                val history = searchHistory.getHistory()
+                if (history.isNotEmpty()) {
+                    historyAdapter.updateData(history)
+                    historyHint.visibility = View.VISIBLE
+                } else {
+                    historyHint.visibility = View.GONE
+                }
+            } else {
+                historyHint.visibility = View.GONE
+            }
+        }
+
         editText.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                if (s.isNullOrEmpty()) clearButton.visibility =
-                    View.INVISIBLE else clearButton.visibility = View.VISIBLE
+                val isEmpty = s.isNullOrEmpty()
+                val hasFocus = editText.hasFocus()
+                val history = searchHistory.getHistory()
+                val input = s?.toString() ?: ""
+                if (hasFocus){
+                    if (isEmpty){
+                        if (history.isNotEmpty()){
+                            historyAdapter.updateData(history)
+                            historyHint.visibility = View.VISIBLE
+                            recyclerView.visibility = View.GONE
+                        }else{
+                            historyHint.visibility = View.GONE
+                            recyclerView.visibility= View.GONE
+                        }
+                    }else{
+                        performSearch(input)
+                        if(songs.isNotEmpty()){
+                            historyHint.visibility = View.GONE
+                            recyclerView.visibility = View.VISIBLE
+                            historyAdapter.updateData(songs)
+                        }else{
+                            historyHint.visibility = View.GONE
+                            recyclerView.visibility = View.GONE
+                        }
+                    }
+                }
+                clearButton.visibility = if (isEmpty) View.INVISIBLE else View.VISIBLE
+
                 searchString = s.toString()
             }
 
             override fun afterTextChanged(s: Editable?) {
             }
         })
-
 
         noResultPlaceholder = findViewById<LinearLayout>(R.id.noResultsPlaceholder)
         noNetworkPlaceholder = findViewById<LinearLayout>(R.id.noNetworkPlaceholder)
@@ -77,10 +127,11 @@ class SearchActivity : AppCompatActivity() {
         }
 
         recyclerView = findViewById<RecyclerView>(R.id.recyclerView)
+        recyclerViewHistory = findViewById<RecyclerView>(R.id.history_recycler)
+        recyclerViewHistory.layoutManager = LinearLayoutManager(this)
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.adapter = trackAdapter
-
-
+        recyclerViewHistory.adapter = historyAdapter
 
         refreshButton.setOnClickListener {
             noNetworkPlaceholder.visibility = View.GONE
@@ -88,7 +139,7 @@ class SearchActivity : AppCompatActivity() {
         }
 
         editText.setOnEditorActionListener { _, actionId, _ ->
-            if (actionId == EditorInfo.IME_ACTION_DONE){
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
                 noResultPlaceholder.visibility = View.GONE
                 noNetworkPlaceholder.visibility = View.GONE
                 val query = editText.text.toString()
@@ -99,40 +150,41 @@ class SearchActivity : AppCompatActivity() {
             }
             false
         }
-
-
     }
 
-    private fun performSearch(query: String){
-        RetrofitSettings.iTunesAPI.searchSong(query).enqueue(object : retrofit2.Callback<SearchResponse> {
-            override fun onResponse(call : Call<SearchResponse>, response : Response<SearchResponse>){
-                if (response.isSuccessful) {
-                    val newSongs = response.body()?.results.orEmpty()
-                    songs.clear()
-                    songs.addAll(newSongs)
-                    trackAdapter.notifyDataSetChanged()
-                    if (songs.isEmpty()) {
-                        noResultPlaceholder.visibility = View.VISIBLE
-                        recyclerView.visibility = View.GONE
-                    } else {
-                        noResultPlaceholder.visibility = View.GONE
-                        recyclerView.visibility = View.VISIBLE
-                    }
+    private fun performSearch(query: String) {
+        RetrofitSettings.iTunesAPI.searchSong(query)
+            .enqueue(object : retrofit2.Callback<SearchResponse> {
+                override fun onResponse(
+                    call: Call<SearchResponse>, response: Response<SearchResponse>
+                ) {
+                    if (response.isSuccessful) {
+                        val newSongs = response.body()?.results.orEmpty()
+                        songs.clear()
+                        songs.addAll(newSongs)
+                        trackAdapter.notifyDataSetChanged()
+                        if (songs.isEmpty()) {
+                            noResultPlaceholder.visibility = View.VISIBLE
+                            recyclerView.visibility = View.GONE
+                        } else {
+                            noResultPlaceholder.visibility = View.GONE
+                            recyclerView.visibility = View.VISIBLE
+                        }
 
-                } else {
+                    } else {
+                        recyclerView.visibility = View.GONE
+                        noResultPlaceholder.visibility = View.GONE
+                        noNetworkPlaceholder.visibility = View.VISIBLE
+                    }
+                }
+
+                override fun onFailure(call: Call<SearchResponse>, t: Throwable) {
+                    t.printStackTrace()
                     recyclerView.visibility = View.GONE
                     noResultPlaceholder.visibility = View.GONE
                     noNetworkPlaceholder.visibility = View.VISIBLE
                 }
-            }
-
-            override fun onFailure(call: Call<SearchResponse>, t: Throwable) {
-                t.printStackTrace()
-                recyclerView.visibility = View.GONE
-                noResultPlaceholder.visibility = View.GONE
-                noNetworkPlaceholder.visibility = View.VISIBLE
-            }
-        })
+            })
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -150,10 +202,9 @@ class SearchActivity : AppCompatActivity() {
         editText.setText(searchString)
     }
 
-    companion object{
+    companion object {
         private const val SEARCH_STRING = "SEARCH_STRING"
         private const val STRING_DEF = ""
     }
-
 
 }

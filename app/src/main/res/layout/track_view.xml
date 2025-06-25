@@ -5,6 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <LinearLayout
+        android:id="@+id/song_overall"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="@dimen/card_margin_hor"

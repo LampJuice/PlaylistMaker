@@ -2,6 +2,7 @@ package com.example.playlistmaker
 
 import android.view.View
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -17,7 +18,7 @@ class TrackViewHolder(itemView: View):RecyclerView.ViewHolder(itemView) {
 
     private val cornerRadiusPx = itemView.context.resources.getDimensionPixelSize(R.dimen.round_corners_cover)
 
-    fun bind(model: Song){
+    fun bind(model: Song, onTrackClick:(Song)-> Unit){
         val formatTime = model.trackTimeMillis?.toMinutesAndSeconds() ?: "00:00"
         sourceName.text = model.trackName
         sourceBand.text = model.artistName
@@ -28,6 +29,7 @@ class TrackViewHolder(itemView: View):RecyclerView.ViewHolder(itemView) {
             .transform(RoundedCorners(cornerRadiusPx))
             .placeholder(R.drawable.placeholder_45)
             .into(sourceImg)
+        itemView.setOnClickListener { onTrackClick(model) }
     }
     fun Long.toMinutesAndSeconds(): String {
         return SimpleDateFormat("mm:ss", Locale.getDefault()).format(this)

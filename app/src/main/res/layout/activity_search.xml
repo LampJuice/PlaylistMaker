@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/background_menu"
     android:orientation="vertical">
 
@@ -11,8 +11,7 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:orientation="horizontal"
-        android:paddingHorizontal="@dimen/main_padding"
-        >
+        android:paddingHorizontal="@dimen/main_padding">
 
         <ImageView
             android:id="@+id/search_back"
@@ -37,10 +36,10 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="4dp"
-        android:layout_marginBottom="24dp"
         android:layout_marginHorizontal="@dimen/main_padding"
-        android:orientation="horizontal">
+        android:layout_marginBottom="24dp"
+        android:orientation="horizontal"
+        android:paddingTop="4dp">
 
         <EditText
             android:id="@+id/search_edittext"
@@ -52,16 +51,16 @@
             android:drawablePadding="10dp"
             android:fontFamily="@font/ys_display_regular"
             android:hint="@string/search"
+            android:imeOptions="actionDone"
             android:inputType="text"
             android:lines="1"
             android:maxLength="16"
             android:paddingStart="@dimen/secondary_padding"
             android:paddingEnd="@dimen/secondary_padding"
+            android:singleLine="true"
             android:textColor="@color/black"
             android:textColorHint="@color/search_hint"
-            android:textSize="@dimen/text_regular"
-            android:imeOptions="actionDone"
-            android:singleLine="true"/>
+            android:textSize="@dimen/text_regular" />
 
         <ImageView
             android:id="@+id/clear_text"
@@ -71,78 +70,128 @@
             android:layout_marginEnd="12dp"
             android:contentDescription="@string/clear"
             android:src="@drawable/ic_close_16"
-            android:visibility="invisible"/>
+            android:visibility="invisible" />
     </FrameLayout>
+
+    <LinearLayout
+        android:id="@+id/history_hint"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        android:gravity="center"
+        android:orientation="vertical"
+
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/history_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:fontFamily="@font/ys_display_medium"
+            android:text="@string/history"
+            android:textColor="@color/ic_tint"
+            android:textSize="@dimen/ph_text" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/history_recycler"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/clear_history_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:layout_marginTop="24dp"
+            android:layout_marginBottom="@dimen/main_padding"
+            android:backgroundTint="@color/ic_tint"
+            android:fontFamily="@font/ys_display_medium"
+            android:letterSpacing="0"
+            android:paddingHorizontal="14dp"
+            android:paddingVertical="10dp"
+
+            android:text="@string/history_clear"
+            android:textAllCaps="false"
+            android:textColor="@color/background_menu"
+            android:textFontWeight="500"
+            android:textSize="@dimen/ph_button_text"
+            app:cornerRadius="54dp" />
+
+    </LinearLayout>
+
 
     <LinearLayout
         android:id="@+id/noResultsPlaceholder"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
+        android:layout_marginTop="110dp"
         android:gravity="center"
-        android:visibility="gone"
-        android:layout_marginTop="110dp">
+        android:orientation="vertical"
+        android:visibility="gone">
 
         <ImageView
             android:layout_width="@dimen/placeholder_size"
             android:layout_height="@dimen/placeholder_size"
-            android:src="@drawable/ic_no_result"/>
+            android:src="@drawable/ic_no_result" />
 
         <TextView
             style="@style/settings_option"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/no_result"
             android:layout_gravity="center"
+            android:layout_marginTop="@dimen/main_padding"
             android:fontFamily="@font/ys_display_medium"
-            android:textSize="19sp"
-            android:layout_marginTop="@dimen/main_padding"/>
+            android:text="@string/no_result"
+            android:textSize="@dimen/ph_text" />
     </LinearLayout>
 
     <LinearLayout
         android:id="@+id/noNetworkPlaceholder"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
+        android:layout_marginTop="110dp"
         android:gravity="center"
-        android:visibility="gone"
-        android:layout_marginTop="110dp">
+        android:orientation="vertical"
+        android:visibility="gone">
 
         <ImageView
             android:layout_width="@dimen/placeholder_size"
             android:layout_height="@dimen/placeholder_size"
-            android:src="@drawable/ic_no_network"/>
+            android:src="@drawable/ic_no_network" />
 
         <TextView
             style="@style/settings_option"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/no_network"
-            android:gravity="center"
-            android:fontFamily="@font/ys_display_medium"
-            android:textSize="19sp"
+            android:layout_marginHorizontal="@dimen/main_padding"
             android:layout_marginTop="@dimen/main_padding"
-            android:layout_marginHorizontal="@dimen/main_padding"/>
+            android:fontFamily="@font/ys_display_medium"
+            android:gravity="center"
+            android:text="@string/no_network"
+            android:textSize="@dimen/ph_text" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/renew_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:cornerRadius="52dp"
-            android:text="@string/renew"
-            android:backgroundTint="@color/ic_tint"
-            android:textColor="@color/background_menu"
             android:layout_marginTop="24dp"
-            android:padding="6dp"
-            android:textAllCaps="false"
+            android:backgroundTint="@color/ic_tint"
             android:fontFamily="@font/ys_display_medium"
-            android:textSize="14sp"/>
+            android:letterSpacing="0"
+            android:padding="6dp"
+            android:text="@string/renew"
+            android:textAllCaps="false"
+            android:textColor="@color/background_menu"
+            android:textSize="@dimen/ph_button_text"
+            app:cornerRadius="52dp" />
     </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
 </LinearLayout>

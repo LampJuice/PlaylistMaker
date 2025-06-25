@@ -10,6 +10,8 @@ data class Song(
     @SerializedName("trackTimeMillis")
     val trackTimeMillis: Long?,
     @SerializedName("artworkUrl100")
-    val artworkUrl100: String?
+    val artworkUrl100: String?,
+    @SerializedName("trackId")
+    val trackId: Int?
 
 )
