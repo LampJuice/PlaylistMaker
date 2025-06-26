@@ -13,4 +13,6 @@
     <dimen name="secondary_padding">14dp</dimen>
     <dimen name="round_corners_cover">2dp</dimen>
     <dimen name="placeholder_size">120dp</dimen>
+    <dimen name="ph_text">19sp</dimen>
+    <dimen name="ph_button_text">14sp</dimen>
 </resources>

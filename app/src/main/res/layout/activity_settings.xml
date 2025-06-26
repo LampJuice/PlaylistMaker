@@ -48,23 +48,17 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                style="@style/settings_option"
-                android:paddingVertical="20dp"
-                android:text="@string/dark_theme"
-                />
 
-            <Switch
-                android:id="@+id/theme_switch"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_gravity="end"
-                android:minWidth="48dp"
-                android:minHeight="48dp"
-                />
+            <com.google.android.material.switchmaterial.SwitchMaterial
+                android:id="@+id/themeSwitcher"
+                style="@style/settings_option"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/dark_theme"
+                android:layout_gravity="start"
+                android:paddingVertical="21dp"/>
+
+
 
         </LinearLayout>
 
