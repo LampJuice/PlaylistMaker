@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatDelegate
 class App : Application() {
 
     var darkTheme = false
+        private set
 
     override fun onCreate() {
         super.onCreate()
@@ -16,8 +17,8 @@ class App : Application() {
         if (prefs.contains(THEME_KEY)) {
             darkTheme = prefs.getBoolean(THEME_KEY, false)
         } else {
-            darkTheme = false
-            //darkTheme = isSysInDark()
+
+            darkTheme = isSysInDark()
 
             prefs.edit().putBoolean(THEME_KEY, darkTheme).apply()
         }
@@ -26,11 +27,11 @@ class App : Application() {
         )
     }
 
-//        private fun isSysInDark(): Boolean {
-//
-//        val currentNightMode = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
-//        return currentNightMode == Configuration.UI_MODE_NIGHT_YES
-//    }
+        private fun isSysInDark(): Boolean {
+
+        val currentNightMode = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
+        return currentNightMode == Configuration.UI_MODE_NIGHT_YES
+    }
     fun switchTheme(darkThemeEnabled: Boolean) {
         darkTheme = darkThemeEnabled
         getSharedPreferences(PREFS_NAME, MODE_PRIVATE)

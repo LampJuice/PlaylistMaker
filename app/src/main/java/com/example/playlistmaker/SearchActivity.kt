@@ -70,6 +70,8 @@ class SearchActivity : AppCompatActivity() {
             }
         }
 
+
+
         editText.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
             }
@@ -78,26 +80,13 @@ class SearchActivity : AppCompatActivity() {
                 val isEmpty = s.isNullOrEmpty()
                 val hasFocus = editText.hasFocus()
                 val history = searchHistory.getHistory()
-                val input = s?.toString() ?: ""
+                //val input = s?.toString() ?: ""
                 if (hasFocus){
-                    if (isEmpty){
-                        if (history.isNotEmpty()){
-                            historyAdapter.updateData(history)
-                            historyHint.visibility = View.VISIBLE
-                            recyclerView.visibility = View.GONE
-                        }else{
-                            historyHint.visibility = View.GONE
-                            recyclerView.visibility= View.GONE
-                        }
-                    }else{
-                        performSearch(input)
-                        if(songs.isNotEmpty()){
-                            historyHint.visibility = View.GONE
-                            recyclerView.visibility = View.VISIBLE
-                            historyAdapter.updateData(songs)
-                        }else{
-                            historyHint.visibility = View.GONE
-                            recyclerView.visibility = View.GONE
+                    when {
+                        isEmpty && history.isNotEmpty() -> renderState(SearchUIState.ShowHistory)
+                        isEmpty -> renderState(SearchUIState.Initial)
+                        else -> {
+                            renderState(SearchUIState.Typing)
                         }
                     }
                 }
@@ -149,6 +138,50 @@ class SearchActivity : AppCompatActivity() {
                 true
             }
             false
+        }
+    }
+
+    private fun renderState(state : SearchUIState){
+        when(state){
+            is SearchUIState.Initial -> {
+                recyclerView.visibility = View.GONE
+                historyHint.visibility = View.GONE
+                noResultPlaceholder.visibility = View.GONE
+                noNetworkPlaceholder.visibility = View.GONE
+            }
+            is SearchUIState.ShowHistory -> {
+                recyclerView.visibility = View.GONE
+                noResultPlaceholder.visibility = View.GONE
+                noNetworkPlaceholder.visibility = View.GONE
+                historyHint.visibility = View.VISIBLE
+                historyAdapter.updateData(searchHistory.getHistory())
+            }
+            is SearchUIState.ShowEmptyPlaceholder -> {
+                recyclerView.visibility = View.GONE
+                historyHint.visibility = View.GONE
+                noResultPlaceholder.visibility = View.VISIBLE
+                noNetworkPlaceholder.visibility = View.GONE
+            }
+            is SearchUIState.ShowNoNetworkPlaceholder -> {
+                recyclerView.visibility = View.GONE
+                historyHint.visibility = View.GONE
+                noResultPlaceholder.visibility = View.GONE
+                noNetworkPlaceholder.visibility = View.VISIBLE
+            }
+            is SearchUIState.ShowSearchResults -> {
+                recyclerView.visibility = View.VISIBLE
+                historyHint.visibility = View.GONE
+                noResultPlaceholder.visibility = View.GONE
+                noNetworkPlaceholder.visibility = View.GONE
+                historyAdapter.updateData(songs)
+            }
+            is SearchUIState.Typing -> {
+                recyclerView.visibility = View.GONE
+                historyHint.visibility = View.GONE
+                noResultPlaceholder.visibility = View.GONE
+                noNetworkPlaceholder.visibility = View.GONE
+            }
+
         }
     }
 

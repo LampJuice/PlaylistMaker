@@ -4,7 +4,10 @@ import android.content.SharedPreferences
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 
-class SearchHistory(private val sharedPreferences: SharedPreferences) {
+class SearchHistory(
+    private val sharedPreferences: SharedPreferences,
+    private val gson: Gson = Gson()
+) {
 
     fun saveTrack(track: Song) {
         val history = getHistory().toMutableList()
@@ -21,7 +24,7 @@ class SearchHistory(private val sharedPreferences: SharedPreferences) {
         val json = sharedPreferences.getString(SEARCH_HISTORY_KEY, null) ?: return emptyList()
         return try {
             val type = object : TypeToken<List<Song>>() {}.type
-            Gson().fromJson(json, type)
+            gson.fromJson(json, type)
         } catch (e: Exception) {
             emptyList()
         }
@@ -32,7 +35,7 @@ class SearchHistory(private val sharedPreferences: SharedPreferences) {
     }
 
     private fun saveHistory(history: List<Song>) {
-        val json = Gson().toJson(history)
+        val json = gson.toJson(history)
         sharedPreferences.edit().putString(SEARCH_HISTORY_KEY, json).apply()
     }
 
