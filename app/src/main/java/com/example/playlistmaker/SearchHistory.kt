@@ -8,7 +8,6 @@ class SearchHistory(
     private val sharedPreferences: SharedPreferences,
     private val gson: Gson = Gson()
 ) {
-
     fun saveTrack(track: Song) {
         val history = getHistory().toMutableList()
         history.removeAll { it.trackId == track.trackId }
@@ -17,7 +16,6 @@ class SearchHistory(
             history.removeAt(history.size - 1)
         }
         saveHistory(history)
-
     }
 
     fun getHistory(): List<Song> {

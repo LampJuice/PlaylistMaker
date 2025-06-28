@@ -20,6 +20,12 @@
         <item name="android:lines">1</item>
 
     </style>
+
+    <style name="text_player">
+        android:fontFamily="@font/ys_text_regular"
+        android:textFontWeight="400"
+        android:textSize="13sp"
+    </style>
     <style name="button_main" parent="Widget.MaterialComponents.Button.UnelevatedButton">
         <item name="backgroundTint">@color/white</item>
         <item name="android:textAllCaps">false</item>
