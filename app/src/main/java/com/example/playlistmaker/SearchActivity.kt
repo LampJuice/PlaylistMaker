@@ -150,7 +150,7 @@ class SearchActivity : AppCompatActivity() {
 
     private fun openPlayer(song: Song) {
         val intent = Intent(this, PlayerActivity::class.java)
-        intent.putExtra("TRACK_KEY", song)
+        intent.putExtra(EXTRA_TRACK, song)
         startActivity(intent)
     }
 
@@ -256,6 +256,7 @@ class SearchActivity : AppCompatActivity() {
     companion object {
         private const val SEARCH_STRING = "SEARCH_STRING"
         private const val STRING_DEF = ""
+        const val EXTRA_TRACK = "EXTRA_TRACK"
     }
 
 }

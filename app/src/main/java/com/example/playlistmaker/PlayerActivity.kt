@@ -11,26 +11,40 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 
 class PlayerActivity : AppCompatActivity() {
 
+    private lateinit var trackName: TextView
+    private lateinit var artistName: TextView
+    private lateinit var time: TextView
+    private lateinit var albumName: TextView
+    private lateinit var releaseDate: TextView
+    private lateinit var genre: TextView
+    private lateinit var country: TextView
+    private lateinit var backButton: ImageView
+    private lateinit var likeButton: ImageView
+    private lateinit var playButton: ImageView
+    private lateinit var releaseGroup: Group
+    private lateinit var cover: ImageView
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         setContentView(R.layout.activity_player)
 
-        val song = intent.getParcelableExtra<Song>("TRACK_KEY")
+        val song = intent.getParcelableExtra<Song>(SearchActivity.EXTRA_TRACK)
 
-        val trackName = findViewById<TextView>(R.id.track_name)
-        val artistName = findViewById<TextView>(R.id.artist_name)
-        val time = findViewById<TextView>(R.id.time2)
-        val albumName = findViewById<TextView>(R.id.album_name2)
-        val releaseDate = findViewById<TextView>(R.id.release_date2)
-        val genre = findViewById<TextView>(R.id.genre_name2)
-        val country = findViewById<TextView>(R.id.country2)
-        val backButton = findViewById<ImageView>(R.id.back_arrow)
-        val likeButton = findViewById<ImageView>(R.id.like_button)
-        val playButton = findViewById<ImageView>(R.id.play_button)
-        val releaseGroup = findViewById<Group>(R.id.release_group)
-        val cover = findViewById<ImageView>(R.id.cover)
+         trackName = findViewById<TextView>(R.id.track_name)
+         artistName = findViewById<TextView>(R.id.artist_name)
+         time = findViewById<TextView>(R.id.time2)
+         albumName = findViewById<TextView>(R.id.album_name2)
+         releaseDate = findViewById<TextView>(R.id.release_date2)
+         genre = findViewById<TextView>(R.id.genre_name2)
+         country = findViewById<TextView>(R.id.country2)
+         backButton = findViewById<ImageView>(R.id.back_arrow)
+         likeButton = findViewById<ImageView>(R.id.like_button)
+         playButton = findViewById<ImageView>(R.id.play_button)
+         releaseGroup = findViewById<Group>(R.id.release_group)
+         cover = findViewById<ImageView>(R.id.cover)
+
         val cornerRadiusPx = resources.getDimensionPixelSize(R.dimen.corner_radius_player_cover)
 
 
