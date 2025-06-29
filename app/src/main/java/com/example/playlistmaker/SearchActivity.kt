@@ -1,6 +1,7 @@
 package com.example.playlistmaker
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -25,14 +26,21 @@ class SearchActivity : AppCompatActivity() {
 
     private lateinit var searchHistory: SearchHistory
     private val songs = mutableListOf<Song>()
-    private val trackAdapter = TrackAdapter(songs) { song -> searchHistory.saveTrack(song) }
+    private val trackAdapter = TrackAdapter(songs) { song ->
+        searchHistory.saveTrack(song)
+        openPlayer(song)
+    }
     private val historyAdapter =
-        TrackAdapter(mutableListOf()) { song -> searchHistory.saveTrack(song) }
+        TrackAdapter(mutableListOf()) { song ->
+            searchHistory.saveTrack(song)
+            openPlayer(song)
+        }
     private lateinit var noNetworkPlaceholder: LinearLayout
     private lateinit var noResultPlaceholder: LinearLayout
     private lateinit var historyHint: LinearLayout
     private lateinit var recyclerView: RecyclerView
     private lateinit var recyclerViewHistory: RecyclerView
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -80,8 +88,7 @@ class SearchActivity : AppCompatActivity() {
                 val isEmpty = s.isNullOrEmpty()
                 val hasFocus = editText.hasFocus()
                 val history = searchHistory.getHistory()
-                //val input = s?.toString() ?: ""
-                if (hasFocus){
+                if (hasFocus) {
                     when {
                         isEmpty && history.isNotEmpty() -> renderState(SearchUIState.ShowHistory)
                         isEmpty -> renderState(SearchUIState.Initial)
@@ -141,14 +148,21 @@ class SearchActivity : AppCompatActivity() {
         }
     }
 
-    private fun renderState(state : SearchUIState){
-        when(state){
+    private fun openPlayer(song: Song) {
+        val intent = Intent(this, PlayerActivity::class.java)
+        intent.putExtra(EXTRA_TRACK, song)
+        startActivity(intent)
+    }
+
+    private fun renderState(state: SearchUIState) {
+        when (state) {
             is SearchUIState.Initial -> {
                 recyclerView.visibility = View.GONE
                 historyHint.visibility = View.GONE
                 noResultPlaceholder.visibility = View.GONE
                 noNetworkPlaceholder.visibility = View.GONE
             }
+
             is SearchUIState.ShowHistory -> {
                 recyclerView.visibility = View.GONE
                 noResultPlaceholder.visibility = View.GONE
@@ -156,18 +170,21 @@ class SearchActivity : AppCompatActivity() {
                 historyHint.visibility = View.VISIBLE
                 historyAdapter.updateData(searchHistory.getHistory())
             }
+
             is SearchUIState.ShowEmptyPlaceholder -> {
                 recyclerView.visibility = View.GONE
                 historyHint.visibility = View.GONE
                 noResultPlaceholder.visibility = View.VISIBLE
                 noNetworkPlaceholder.visibility = View.GONE
             }
+
             is SearchUIState.ShowNoNetworkPlaceholder -> {
                 recyclerView.visibility = View.GONE
                 historyHint.visibility = View.GONE
                 noResultPlaceholder.visibility = View.GONE
                 noNetworkPlaceholder.visibility = View.VISIBLE
             }
+
             is SearchUIState.ShowSearchResults -> {
                 recyclerView.visibility = View.VISIBLE
                 historyHint.visibility = View.GONE
@@ -175,6 +192,7 @@ class SearchActivity : AppCompatActivity() {
                 noNetworkPlaceholder.visibility = View.GONE
                 historyAdapter.updateData(songs)
             }
+
             is SearchUIState.Typing -> {
                 recyclerView.visibility = View.GONE
                 historyHint.visibility = View.GONE
@@ -238,6 +256,7 @@ class SearchActivity : AppCompatActivity() {
     companion object {
         private const val SEARCH_STRING = "SEARCH_STRING"
         private const val STRING_DEF = ""
+        const val EXTRA_TRACK = "EXTRA_TRACK"
     }
 
 }

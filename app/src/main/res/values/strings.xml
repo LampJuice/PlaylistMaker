@@ -20,5 +20,10 @@
     <string name="renew">Обновить</string>
     <string name="history">Вы искали</string>
     <string name="history_clear">Очистить историю</string>
+    <string name="time">Длительность</string>
+    <string name="album">Альбом</string>
+    <string name="release">Год</string>
+    <string name="genre">Жанр</string>
+    <string name="country">Страна</string>
 
 </resources>
