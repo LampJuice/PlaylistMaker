@@ -67,12 +67,12 @@ class PlayerActivity : AppCompatActivity() {
         var isPlayed = false
         playButton.setOnClickListener {
             isPlayed = !isPlayed
-            val icPlay = if (isPlayed) {
+            val icRes = if (isPlayed) {
                 R.drawable.ic_pause_100
             } else {
                 R.drawable.ic_play_100
             }
-            playButton.setImageResource(icPlay)
+            playButton.setImageResource(icRes)
         }
 
         backButton.setOnClickListener { finish() }
