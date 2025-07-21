@@ -22,5 +22,7 @@ data class Song(
     @SerializedName("country")
     val country: String?,
     @SerializedName("primaryGenreName")
-    val primaryGenreName: String?
+    val primaryGenreName: String?,
+    @SerializedName("previewUrl")
+    val previewUrl: String?
 ) : Parcelable
