@@ -4,11 +4,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
-    android:fillViewport="true">
+    android:fillViewport="true"
+    >
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:background="@color/background_menu">
 
         <ImageView
             android:id="@+id/back_arrow"
@@ -73,6 +75,7 @@
             app:layout_constraintBottom_toTopOf="@+id/play_time"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
+
             app:layout_constraintTop_toBottomOf="@+id/artist_name" />
 
         <TextView
@@ -81,7 +84,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
             android:fontFamily="@font/ys_display_medium"
-            android:text="0:33"
+            android:text="@string/play_time"
             android:textColor="@color/ic_tint"
             android:textFontWeight="500"
             android:textSize="14sp"

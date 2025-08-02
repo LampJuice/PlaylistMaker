@@ -3,6 +3,8 @@ package com.example.playlistmaker
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
@@ -12,6 +14,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.ProgressBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -27,30 +30,37 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var searchHistory: SearchHistory
     private val songs = mutableListOf<Song>()
     private val trackAdapter = TrackAdapter(songs) { song ->
-        searchHistory.saveTrack(song)
-        openPlayer(song)
-    }
-    private val historyAdapter =
-        TrackAdapter(mutableListOf()) { song ->
+        if (clickDebounce()) {
             searchHistory.saveTrack(song)
             openPlayer(song)
         }
+    }
+    private val historyAdapter =
+        TrackAdapter(mutableListOf()) { song ->
+            if (clickDebounce()) {
+                searchHistory.saveTrack(song)
+                openPlayer(song)
+            }
+        }
+    private val searchHandler = Handler(Looper.getMainLooper())
+    private var searchRunnable = Runnable { performSearch(lastSearch!!) }
+
     private lateinit var noNetworkPlaceholder: LinearLayout
     private lateinit var noResultPlaceholder: LinearLayout
     private lateinit var historyHint: LinearLayout
     private lateinit var recyclerView: RecyclerView
     private lateinit var recyclerViewHistory: RecyclerView
-
+    private lateinit var progressBar: ProgressBar
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         setContentView(R.layout.activity_search)
 
         val backButton = findViewById<ImageView>(R.id.search_back)
         val editText = findViewById<EditText>(R.id.search_edittext)
         val clearButton = findViewById<ImageView>(R.id.clear_text)
         historyHint = findViewById<LinearLayout>(R.id.history_hint)
+        progressBar = findViewById<ProgressBar>(R.id.search_progress_bar)
 
         val clearHistoryButton = findViewById<MaterialButton>(R.id.clear_history_button)
         val sharedPreferences = getSharedPreferences("search_history", MODE_PRIVATE)
@@ -78,8 +88,6 @@ class SearchActivity : AppCompatActivity() {
             }
         }
 
-
-
         editText.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
             }
@@ -98,6 +106,15 @@ class SearchActivity : AppCompatActivity() {
                     }
                 }
                 clearButton.visibility = if (isEmpty) View.INVISIBLE else View.VISIBLE
+
+                searchHandler.removeCallbacks(searchRunnable)
+                searchRunnable = Runnable {
+                    if (!s.isNullOrEmpty()) {
+                        lastSearch = s.toString()
+                        performSearch(s.toString())
+                    }
+                }
+                searchHandler.postDelayed(searchRunnable, SEARCH_DEBOUNCE_DELAY)
 
                 searchString = s.toString()
             }
@@ -204,11 +221,13 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun performSearch(query: String) {
+        progressBar.visibility = View.VISIBLE
         RetrofitSettings.iTunesAPI.searchSong(query)
             .enqueue(object : retrofit2.Callback<SearchResponse> {
                 override fun onResponse(
                     call: Call<SearchResponse>, response: Response<SearchResponse>
                 ) {
+                    progressBar.visibility = View.GONE
                     if (response.isSuccessful) {
                         val newSongs = response.body()?.results.orEmpty()
                         songs.clear()
@@ -230,6 +249,7 @@ class SearchActivity : AppCompatActivity() {
                 }
 
                 override fun onFailure(call: Call<SearchResponse>, t: Throwable) {
+                    progressBar.visibility = View.GONE
                     t.printStackTrace()
                     recyclerView.visibility = View.GONE
                     noResultPlaceholder.visibility = View.GONE
@@ -242,21 +262,30 @@ class SearchActivity : AppCompatActivity() {
         val editText = findViewById<EditText>(R.id.search_edittext)
         super.onSaveInstanceState(outState)
         outState.putString(SEARCH_STRING, editText.text.toString())
-
     }
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         super.onRestoreInstanceState(savedInstanceState)
         val editText = findViewById<EditText>(R.id.search_edittext)
-
         searchString = savedInstanceState.getString(SEARCH_STRING, STRING_DEF)
         editText.setText(searchString)
     }
 
+    private var isClickAllowed = true
+    private fun clickDebounce(): Boolean {
+        val current = isClickAllowed
+        if (current) {
+            isClickAllowed = false
+            searchHandler.postDelayed({ isClickAllowed = true }, CLICK_DEBOUNCE_DELAY)
+        }
+        return current
+    }
+
     companion object {
+        private val SEARCH_DEBOUNCE_DELAY = 2000L
+        private val CLICK_DEBOUNCE_DELAY = 1000L
         private const val SEARCH_STRING = "SEARCH_STRING"
         private const val STRING_DEF = ""
         const val EXTRA_TRACK = "EXTRA_TRACK"
     }
-
 }
