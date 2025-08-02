@@ -1,10 +1,11 @@
-package com.example.playlistmaker
+package com.example.playlistmaker.data.dto
 
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
 import kotlinx.parcelize.Parcelize
+
 @Parcelize
-data class Song(
+data class SongDto(
     @SerializedName("trackName")
     val trackName: String?,
     @SerializedName("artistName")

@@ -1,4 +1,4 @@
-package com.example.playlistmaker
+package com.example.playlistmaker.ui.search
 
 sealed class SearchUIState {
     object Initial : SearchUIState()
