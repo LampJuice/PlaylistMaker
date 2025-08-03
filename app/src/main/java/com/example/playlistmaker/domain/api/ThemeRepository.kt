@@ -4,4 +4,5 @@ interface ThemeRepository {
     fun isDarkTheme(): Boolean
     fun setDarkTheme(enabled: Boolean)
     fun hasSavedTheme(): Boolean
+    fun applyTheme(darkTheme: Boolean)
 }

@@ -1,6 +1,7 @@
 package com.example.playlistmaker.data
 
 import android.content.SharedPreferences
+import androidx.appcompat.app.AppCompatDelegate
 import com.example.playlistmaker.domain.api.ThemeRepository
 
 class ThemeRepositoryImpl(private val sharedPreferences: SharedPreferences) : ThemeRepository {
@@ -14,6 +15,13 @@ class ThemeRepositoryImpl(private val sharedPreferences: SharedPreferences) : Th
 
     override fun hasSavedTheme(): Boolean {
         return sharedPreferences.contains(THEME_KEY)
+    }
+
+    override fun applyTheme(darkTheme: Boolean) {
+        AppCompatDelegate.setDefaultNightMode(
+            if (darkTheme) AppCompatDelegate.MODE_NIGHT_YES
+            else AppCompatDelegate.MODE_NIGHT_NO
+        )
     }
 
     companion object {

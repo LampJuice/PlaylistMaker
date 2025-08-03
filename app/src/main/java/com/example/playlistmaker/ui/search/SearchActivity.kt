@@ -61,8 +61,8 @@ class SearchActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
 
-        val sharedPreferences = getSharedPreferences("search_history", MODE_PRIVATE)
-        searchHistory = Creator.provideSearchHistoryInteractor(sharedPreferences)
+
+        searchHistory = Creator.provideSearchHistoryInteractor()
 
         val backButton = findViewById<ImageView>(R.id.search_back)
         val editText = findViewById<EditText>(R.id.search_edittext)

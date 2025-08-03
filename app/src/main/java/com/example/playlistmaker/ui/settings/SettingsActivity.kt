@@ -26,7 +26,7 @@ class SettingsActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_settings)
 
-        themeInteractor = Creator.provideThemeInteractor(this)
+        themeInteractor = Creator.provideThemeInteractor()
 
         val backButton = findViewById<ImageView>(R.id.settings_back)
         val shareButton = findViewById<ImageView>(R.id.share_icon)
