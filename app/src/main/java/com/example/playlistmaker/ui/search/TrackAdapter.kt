@@ -1,8 +1,10 @@
-package com.example.playlistmaker
+package com.example.playlistmaker.ui.search
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.example.playlistmaker.R
+import com.example.playlistmaker.domain.models.Song
 
 class TrackAdapter(
     private val tracks: MutableList<Song>,

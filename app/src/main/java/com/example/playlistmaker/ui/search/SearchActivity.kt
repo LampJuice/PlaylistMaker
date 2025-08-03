@@ -1,6 +1,5 @@
-package com.example.playlistmaker
+package com.example.playlistmaker.ui.search
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
@@ -18,16 +17,22 @@ import android.widget.ProgressBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.playlistmaker.Creator
+import com.example.playlistmaker.R
+import com.example.playlistmaker.domain.api.SearchHistoryInteractor
+import com.example.playlistmaker.domain.api.SongsInteractor
+import com.example.playlistmaker.domain.models.Song
+import com.example.playlistmaker.ui.player.PlayerActivity
 import com.google.android.material.button.MaterialButton
-import retrofit2.Call
-import retrofit2.Response
-
 
 class SearchActivity : AppCompatActivity() {
     var searchString: String = STRING_DEF
     private var lastSearch: String? = null
 
-    private lateinit var searchHistory: SearchHistory
+    private lateinit var searchHistory: SearchHistoryInteractor
+
+    private val interactor = Creator.provideSongsInteractor()
+
     private val songs = mutableListOf<Song>()
     private val trackAdapter = TrackAdapter(songs) { song ->
         if (clickDebounce()) {
@@ -56,6 +61,9 @@ class SearchActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
 
+
+        searchHistory = Creator.provideSearchHistoryInteractor()
+
         val backButton = findViewById<ImageView>(R.id.search_back)
         val editText = findViewById<EditText>(R.id.search_edittext)
         val clearButton = findViewById<ImageView>(R.id.clear_text)
@@ -63,8 +71,7 @@ class SearchActivity : AppCompatActivity() {
         progressBar = findViewById<ProgressBar>(R.id.search_progress_bar)
 
         val clearHistoryButton = findViewById<MaterialButton>(R.id.clear_history_button)
-        val sharedPreferences = getSharedPreferences("search_history", MODE_PRIVATE)
-        searchHistory = SearchHistory(sharedPreferences)
+
 
         clearHistoryButton.setOnClickListener {
             searchHistory.clearHistory()
@@ -127,7 +134,7 @@ class SearchActivity : AppCompatActivity() {
         noNetworkPlaceholder = findViewById<LinearLayout>(R.id.noNetworkPlaceholder)
         val refreshButton = findViewById<Button>(R.id.renew_button)
         val inputMethodManager =
-            getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+            getSystemService(INPUT_METHOD_SERVICE) as? InputMethodManager
 
         clearButton.setOnClickListener {
             editText.text?.clear()
@@ -222,40 +229,28 @@ class SearchActivity : AppCompatActivity() {
 
     private fun performSearch(query: String) {
         progressBar.visibility = View.VISIBLE
-        RetrofitSettings.iTunesAPI.searchSong(query)
-            .enqueue(object : retrofit2.Callback<SearchResponse> {
-                override fun onResponse(
-                    call: Call<SearchResponse>, response: Response<SearchResponse>
-                ) {
+        noNetworkPlaceholder.visibility = View.GONE
+        noResultPlaceholder.visibility = View.GONE
+        recyclerView.visibility = View.GONE
+        interactor.searchSongs(query, object : SongsInteractor.SongsConsumer {
+            override fun consume(foundSongs: List<Song>) {
+                runOnUiThread {
                     progressBar.visibility = View.GONE
-                    if (response.isSuccessful) {
-                        val newSongs = response.body()?.results.orEmpty()
-                        songs.clear()
-                        songs.addAll(newSongs)
-                        trackAdapter.notifyDataSetChanged()
-                        if (songs.isEmpty()) {
-                            noResultPlaceholder.visibility = View.VISIBLE
-                            recyclerView.visibility = View.GONE
-                        } else {
-                            noResultPlaceholder.visibility = View.GONE
-                            recyclerView.visibility = View.VISIBLE
-                        }
+                    songs.clear()
+                    songs.addAll(foundSongs)
+                    trackAdapter.notifyDataSetChanged()
 
-                    } else {
+                    if (songs.isEmpty()) {
+                        noResultPlaceholder.visibility = View.VISIBLE
                         recyclerView.visibility = View.GONE
+                    } else {
                         noResultPlaceholder.visibility = View.GONE
-                        noNetworkPlaceholder.visibility = View.VISIBLE
+                        recyclerView.visibility = View.VISIBLE
                     }
                 }
+            }
 
-                override fun onFailure(call: Call<SearchResponse>, t: Throwable) {
-                    progressBar.visibility = View.GONE
-                    t.printStackTrace()
-                    recyclerView.visibility = View.GONE
-                    noResultPlaceholder.visibility = View.GONE
-                    noNetworkPlaceholder.visibility = View.VISIBLE
-                }
-            })
+        })
     }
 
     override fun onSaveInstanceState(outState: Bundle) {

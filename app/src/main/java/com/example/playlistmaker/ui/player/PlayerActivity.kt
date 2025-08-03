@@ -1,9 +1,6 @@
-package com.example.playlistmaker
+package com.example.playlistmaker.ui.player
 
-import android.media.MediaPlayer
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
@@ -11,20 +8,19 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.Group
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.example.playlistmaker.Creator
+import com.example.playlistmaker.R
+import com.example.playlistmaker.domain.api.PlayerInteractor
+import com.example.playlistmaker.domain.models.PlayerState
+import com.example.playlistmaker.domain.models.Song
+import com.example.playlistmaker.ui.search.SearchActivity
 import java.text.SimpleDateFormat
 import java.util.Locale
 
 class PlayerActivity : AppCompatActivity() {
-    private var playerState = STATE_DEFAULT
-    private var mediaPlayer = MediaPlayer()
-    private var playerHandler: Handler? = null
-    private val updateTimerRunnable = object : Runnable {
-        override fun run() {
-            playTime.text =
-                SimpleDateFormat("mm:ss", Locale.getDefault()).format(mediaPlayer.currentPosition)
-            playerHandler?.postDelayed(this, 300)
-        }
-    }
+
+    private lateinit var playerInteractor: PlayerInteractor
+
 
     private lateinit var trackName: TextView
     private lateinit var artistName: TextView
@@ -45,6 +41,8 @@ class PlayerActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_player)
+
+        playerInteractor = Creator.providePlayerInteractor()
 
         val song = intent.getParcelableExtra<Song>(SearchActivity.EXTRA_TRACK)
 
@@ -70,7 +68,7 @@ class PlayerActivity : AppCompatActivity() {
             .transform(RoundedCorners(cornerRadiusPx))
             .placeholder(R.drawable.placeholder_45)
             .into(cover)
-        time.text = song?.trackTimeMillis?.toMinutesAndSeconds()
+        time.text = song?.trackTimeMillis
         albumName.text = song?.collectionName ?: ""
         releaseDate.text = song?.releaseDate?.substring(0, 4) ?: ""
         if (releaseDate.text.isEmpty()) releaseGroup.visibility = View.GONE
@@ -79,11 +77,23 @@ class PlayerActivity : AppCompatActivity() {
 
         trackName.text = song?.trackName
         artistName.text = song?.artistName
-
         previewUrl = song?.previewUrl ?: ""
-        playerHandler = Handler(Looper.getMainLooper())
 
-        playButton.setOnClickListener { playbackControl() }
+        playerInteractor.onStateChange = { state ->
+            when (state) {
+                PlayerState.PLAYING -> playButton.setImageResource(R.drawable.ic_pause_100)
+                PlayerState.DEFAULT, PlayerState.PREPARED, PlayerState.PAUSED -> playButton.setImageResource(
+                    R.drawable.ic_play_100
+                )
+            }
+        }
+        playerInteractor.onUpdateTime = { currentMs ->
+            playTime.text = SimpleDateFormat("mm:ss", Locale.getDefault()).format(currentMs)
+        }
+
+        playButton.setOnClickListener {
+            playerInteractor.playbackControl(previewUrl)
+        }
         backButton.setOnClickListener { finish() }
 
         var isLiked = false
@@ -96,64 +106,16 @@ class PlayerActivity : AppCompatActivity() {
             }
             likeButton.setImageResource(icRes)
         }
-        preparePlayer()
-
     }
 
     override fun onPause() {
         super.onPause()
-        pausePlayer()
+        playerInteractor.pause()
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        playerHandler?.removeCallbacks(updateTimerRunnable)
-        mediaPlayer.release()
+        playerInteractor.release()
     }
 
-    private fun playbackControl() {
-        when (playerState) {
-            STATE_PLAYING -> {
-                pausePlayer()
-            }
-
-            STATE_PREPARED, STATE_PAUSED -> {
-                startPlayer()
-            }
-        }
-
-    }
-
-    private fun preparePlayer() {
-        mediaPlayer.setDataSource(previewUrl)
-        mediaPlayer.prepareAsync()
-        mediaPlayer.setOnPreparedListener { playerState = STATE_PREPARED }
-        mediaPlayer.setOnCompletionListener {
-            playButton.setImageResource(R.drawable.ic_play_100)
-            playTime.text = "00:00"
-            playerHandler?.removeCallbacks(updateTimerRunnable)
-            playerState = STATE_PREPARED
-        }
-    }
-
-    private fun startPlayer() {
-        mediaPlayer.start()
-        playButton.setImageResource(R.drawable.ic_pause_100)
-        playerState = STATE_PLAYING
-        playerHandler?.post(updateTimerRunnable)
-    }
-
-    private fun pausePlayer() {
-        mediaPlayer.pause()
-        playButton.setImageResource(R.drawable.ic_play_100)
-        playerState = STATE_PAUSED
-        playerHandler?.removeCallbacks(updateTimerRunnable)
-    }
-
-    companion object {
-        private const val STATE_DEFAULT = 0
-        private const val STATE_PREPARED = 1
-        private const val STATE_PLAYING = 2
-        private const val STATE_PAUSED = 3
-    }
 }
