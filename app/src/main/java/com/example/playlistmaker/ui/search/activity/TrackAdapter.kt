@@ -2,11 +2,11 @@ package com.example.playlistmaker.ui.search.activity
 
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.example.playlistmaker.domain.search.models.Song
+import com.example.playlistmaker.ui.search.models.SongUi
 
 class TrackAdapter(
-    private val tracks: MutableList<Song>,
-    val onTrackClick: (Song) -> Unit
+    private val tracks: MutableList<SongUi>,
+    val onTrackClick: (SongUi) -> Unit
 ) : RecyclerView.Adapter<TrackViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TrackViewHolder =
         TrackViewHolder.from(parent)
@@ -20,7 +20,7 @@ class TrackAdapter(
 
     }
 
-    fun updateData(newSongs: List<Song>) {
+    fun updateData(newSongs: List<SongUi>) {
         tracks.clear()
         tracks.addAll(newSongs)
         notifyDataSetChanged()

@@ -7,30 +7,21 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.playlistmaker.domain.player.PlayerInteractor
-import com.example.playlistmaker.domain.player.models.PlayerState
 import com.example.playlistmaker.toMinutesAndSeconds
 
 class PlayerViewModel(private val playerInteractor: PlayerInteractor): ViewModel() {
-    private val playerStateData = MutableLiveData(PlayerState.DEFAULT)
-    val observePlayerState: LiveData<PlayerState> = playerStateData
-
-    private val playTime = MutableLiveData("00:00")
-    val observePlayTime: LiveData<String> = playTime
-
-    private val isLiked = MutableLiveData(false)
-    val observeIsLiked : LiveData<Boolean> = isLiked
+    private val  playerUiState = MutableLiveData(PlayerUiState())
+    val observeUiState: LiveData<PlayerUiState> = playerUiState
 
     private var currentTrackUrl: String? = null
 
     init {
         playerInteractor.onStateChange = { state ->
-            playerStateData.postValue(state)
+            playerUiState.postValue(playerUiState.value?.copy(playerState = state))
         }
-        playerInteractor.onUpdateTime = { currentMs ->
+        playerInteractor.onUpdateTime = { time ->
 
-            playTime.postValue(currentMs.toLong().toMinutesAndSeconds())
-
-
+            playerUiState.postValue(playerUiState.value?.copy(playTime = time.toMinutesAndSeconds()))
         }
     }
 
@@ -41,7 +32,8 @@ class PlayerViewModel(private val playerInteractor: PlayerInteractor): ViewModel
         currentTrackUrl?.let { playerInteractor.playbackControl(it) }
     }
     fun onLikeClick() {
-        isLiked.postValue(!(isLiked.value ?: false))
+       val current = playerUiState.value ?: PlayerUiState()
+        playerUiState.postValue((current.copy(isLiked = !current.isLiked)))
     }
 
     override fun onCleared() {

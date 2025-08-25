@@ -30,14 +30,12 @@ class SettingsActivity : AppCompatActivity() {
 
         viewModel.observeDarkTheme.observe(this) { isDark ->
             binding.themeSwitcher.apply {
-                if(isChecked != isDark){
-                    setOnCheckedChangeListener(null)
+                setOnCheckedChangeListener(null)
+                if(isChecked != isDark) {
                     isChecked = isDark
-                    post {
-                        setOnCheckedChangeListener { _, checked ->
-                            viewModel.onThemeSwitch(checked)
-                        }
-                    }
+                }
+                setOnCheckedChangeListener { _, checked ->
+                    viewModel.onThemeSwitch(checked)
                 }
             }
         }

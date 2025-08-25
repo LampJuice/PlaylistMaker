@@ -7,17 +7,17 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.TrackViewBinding
-import com.example.playlistmaker.domain.search.models.Song
+import com.example.playlistmaker.ui.search.models.SongUi
 
 class TrackViewHolder(private val binding: TrackViewBinding) : RecyclerView.ViewHolder(binding.root) {
 
     private val cornerRadiusPx =
         itemView.context.resources.getDimensionPixelSize(R.dimen.round_corners_cover)
 
-    fun bind(model: Song, onTrackClick: (Song) -> Unit) {
+    fun bind(model: SongUi, onTrackClick: (SongUi) -> Unit) {
         binding.sourceName.text = model.trackName
         binding.sourceBand.text = model.artistName
-        binding.sourceTime.text = model.trackTimeMillis
+        binding.sourceTime.text = model.trackTime
         Glide.with(binding.root)
             .load(model.artworkUrl100)
             .centerCrop()

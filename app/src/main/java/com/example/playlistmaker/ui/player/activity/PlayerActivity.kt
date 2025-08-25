@@ -9,9 +9,9 @@ import com.example.playlistmaker.R
 import com.example.playlistmaker.creator.Creator
 import com.example.playlistmaker.databinding.ActivityPlayerBinding
 import com.example.playlistmaker.domain.player.models.PlayerState
-import com.example.playlistmaker.domain.search.models.Song
 import com.example.playlistmaker.ui.player.view_model.PlayerViewModel
 import com.example.playlistmaker.ui.search.activity.SearchActivity
+import com.example.playlistmaker.ui.search.models.SongUi
 import com.google.gson.Gson
 
 class PlayerActivity : AppCompatActivity() {
@@ -19,16 +19,13 @@ class PlayerActivity : AppCompatActivity() {
     private lateinit var viewModel: PlayerViewModel
     private lateinit var binding: ActivityPlayerBinding
 
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityPlayerBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-
         val songJson = intent.getStringExtra(SearchActivity.Companion.EXTRA_TRACK)
-        val song = Gson().fromJson(songJson, Song::class.java)
+        val song = Gson().fromJson(songJson, SongUi::class.java)
 
         viewModel = ViewModelProvider(
             this,
@@ -37,25 +34,19 @@ class PlayerActivity : AppCompatActivity() {
 
         viewModel.setTrackUrl(song?.previewUrl ?: "")
 
-        viewModel.observePlayerState.observe(this) { state ->
-            val icon = when (state) {
+        viewModel.observeUiState.observe(this) { state ->
+
+            val iconPlay = when (state.playerState) {
                 PlayerState.PLAYING -> R.drawable.ic_pause_100
                 else -> R.drawable.ic_play_100
             }
-            binding.playButton.setImageResource(icon)
+            binding.playButton.setImageResource(iconPlay)
+
+            val iconLike = if (state.isLiked) R.drawable.ic_like_pressed_51 else R.drawable.ic_like_51
+            binding.likeButton.setImageResource(iconLike)
+
+            binding.playTime.text = state.playTime
         }
-
-        viewModel.observePlayTime.observe(this) { time ->
-            binding.playTime.text = time
-        }
-
-        viewModel.observeIsLiked.observe(this) { liked ->
-            val icon = if (liked) R.drawable.ic_like_pressed_51 else R.drawable.ic_like_51
-            binding.likeButton.setImageResource(icon)
-        }
-
-
-
 
         val cornerRadiusPx = resources.getDimensionPixelSize(R.dimen.corner_radius_player_cover)
 
@@ -72,21 +63,16 @@ class PlayerActivity : AppCompatActivity() {
             genreName2.text = song?.primaryGenreName
             country2.text = song?.country
             artistName.text = song?.artistName
-            time2.text = song?.trackTimeMillis
+            time2.text = song?.trackTime
 
             playButton.setOnClickListener { viewModel.onPlayPauseClick() }
             likeButton.setOnClickListener { viewModel.onLikeClick() }
             backArrow.setOnClickListener { finish() }
         }
-
     }
 
     override fun onPause() {
         super.onPause()
         viewModel.omPause()
     }
-
-
-
-
 }

@@ -11,8 +11,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.playlistmaker.creator.Creator
 import com.example.playlistmaker.databinding.ActivitySearchBinding
-import com.example.playlistmaker.domain.search.models.Song
 import com.example.playlistmaker.ui.player.activity.PlayerActivity
+import com.example.playlistmaker.ui.search.models.SongUi
 import com.example.playlistmaker.ui.search.view_model.SearchUIState
 import com.example.playlistmaker.ui.search.view_model.SearchViewModel
 import com.google.gson.Gson
@@ -58,17 +58,10 @@ class SearchActivity : AppCompatActivity() {
         viewModel.stateSearchLiveData.observe(this) { state ->
             render(state)
         }
-
-
-
-
-
         binding.clearHistoryButton.setOnClickListener {
             viewModel.clearHistory()
         }
-
         binding.searchBack.setOnClickListener { finish() }
-
         binding.searchEdittext.setOnFocusChangeListener { _, hasFocus ->
             viewModel.onFocusGained(binding.searchEdittext.text.toString(), hasFocus)
         }
@@ -81,24 +74,18 @@ class SearchActivity : AppCompatActivity() {
                 viewModel.onSearchTextChanged(s.toString(), binding.searchEdittext.hasFocus())
                 binding.clearText.visibility =
                     if (s.isNullOrEmpty()) View.INVISIBLE else View.VISIBLE
-
             }
-
             override fun afterTextChanged(s: Editable?) {
             }
         })
-
 
         binding.clearText.setOnClickListener {
             viewModel.clearEditText()
         }
 
-
         binding.renewButton.setOnClickListener {
             viewModel.onRenewClick()
-
         }
-
     }
 
     private fun render(state: SearchUIState) = with(binding) {
@@ -131,15 +118,12 @@ class SearchActivity : AppCompatActivity() {
         }
     }
 
-
-
-    private fun openPlayer(song: Song) {
+    private fun openPlayer(song: SongUi) {
         val songJson = Gson().toJson(song)
         val intent = Intent(this, PlayerActivity::class.java)
         intent.putExtra(EXTRA_TRACK, songJson)
         startActivity(intent)
     }
-
 
     companion object {
 
