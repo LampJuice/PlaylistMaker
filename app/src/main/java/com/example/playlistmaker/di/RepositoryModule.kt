@@ -14,6 +14,6 @@ import org.koin.dsl.module
 val repositoryModule = module {
     single<ThemeRepository> { ThemeRepositoryImpl(get(named("themeStorage"))) }
     single<SearchHistoryRepository> { SearchHistoryRepositoryImpl(get(named("historyStorage"))) }
-    single<PlayerRepository> { PlayerRepositoryImpl(get()) }
+    factory<PlayerRepository> { PlayerRepositoryImpl(get()) }
     single<SongsRepository> { SongsRepositoryImpl(get()) }
 }

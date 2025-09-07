@@ -8,6 +8,6 @@ import org.koin.dsl.module
 
 val UiModule = module {
     viewModel { SettingsViewModel(get(), get()) }
-    viewModel { SearchViewModel(get(), get(), get()) }
+    viewModel { SearchViewModel(get(), get()) }
     viewModel { PlayerViewModel(get()) }
 }

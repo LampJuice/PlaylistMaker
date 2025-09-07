@@ -1,6 +1,7 @@
 package com.example.playlistmaker.ui.search.view_model
 
 import android.os.Handler
+import android.os.Looper
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -14,8 +15,7 @@ import kotlinx.coroutines.Runnable
 
 class SearchViewModel(
     private val songsInteractor: SongsInteractor,
-    private val historyInteractor: SearchHistoryInteractor,
-    private val handler: Handler
+    private val historyInteractor: SearchHistoryInteractor
 ) : ViewModel() {
 
     private val searchLiveData = MutableLiveData<SearchUIState>()
@@ -23,7 +23,7 @@ class SearchViewModel(
 
     private val songs = mutableListOf<Song>()
     var lastQuery: String? = null
-    //private val handler = Handler(Looper.getMainLooper())
+    private val handler = Handler(Looper.getMainLooper())
     private var searchRunnable: Runnable? = null
 
     private var isClickAllowed = true
@@ -78,18 +78,13 @@ class SearchViewModel(
     }
 
     fun performSearch(query: String) {
-
         searchLiveData.postValue(SearchUIState.Loading)
         songsInteractor.searchSongs(query, object : SongsInteractor.SongsConsumer {
             override fun consume(foundSongs: List<Song>) {
                 handler.post {
-
                     songs.clear()
                     songs.addAll(foundSongs)
-
                     val songsUi = songs.map { it.toUi() }
-
-
                     if (songs.isEmpty()) {
                         searchLiveData.value = SearchUIState.ShowEmptyPlaceholder
                     } else {
@@ -98,11 +93,9 @@ class SearchViewModel(
                     }
                 }
             }
-
             override fun onError(error: Throwable) {
                 handler.post { searchLiveData.postValue(SearchUIState.ShowNoNetworkPlaceholder) }
             }
-
         })
     }
 

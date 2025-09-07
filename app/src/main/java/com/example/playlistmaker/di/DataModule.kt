@@ -1,8 +1,6 @@
 package com.example.playlistmaker.di
 
 import android.media.MediaPlayer
-import android.os.Handler
-import android.os.Looper
 import com.example.playlistmaker.data.NetworkClient
 import com.example.playlistmaker.data.ResourceProvider
 import com.example.playlistmaker.data.StorageClient
@@ -25,7 +23,6 @@ import retrofit2.converter.gson.GsonConverterFactory
 val dataModule = module {
     factory { MediaPlayer() }
     single { Gson() }
-    single { Handler(Looper.getMainLooper()) }
 
     single { Retrofit.Builder()
         .baseUrl("https://itunes.apple.com")
@@ -52,7 +49,7 @@ val dataModule = module {
             gson = get()
         )
     }
-    single { PlayerTimer(get(), get()) }
+    single { PlayerTimer(get()) }
     single<NetworkClient> { RetrofitNetworkClient(get()) }
     single<ExternalNavigator> { ExternalNavigatorImpl(get()) }
     single <ResourceProvider> { ResourceProviderImpl(get()) }
