@@ -17,6 +17,4 @@ class ThemeRepositoryImpl(private val storage: StorageClient<Boolean>) : ThemeRe
             else AppCompatDelegate.MODE_NIGHT_NO
         )
     }
-
-
 }

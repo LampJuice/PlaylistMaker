@@ -1,13 +1,9 @@
 package com.example.playlistmaker.ui.search.view_model
 
 import android.os.Handler
-import android.os.Looper
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewmodel.initializer
-import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.playlistmaker.domain.search.SearchHistoryInteractor
 import com.example.playlistmaker.domain.search.SongsInteractor
 import com.example.playlistmaker.domain.search.models.Song
@@ -18,7 +14,8 @@ import kotlinx.coroutines.Runnable
 
 class SearchViewModel(
     private val songsInteractor: SongsInteractor,
-    private val historyInteractor: SearchHistoryInteractor
+    private val historyInteractor: SearchHistoryInteractor,
+    private val handler: Handler
 ) : ViewModel() {
 
     private val searchLiveData = MutableLiveData<SearchUIState>()
@@ -26,7 +23,7 @@ class SearchViewModel(
 
     private val songs = mutableListOf<Song>()
     var lastQuery: String? = null
-    private val handler = Handler(Looper.getMainLooper())
+    //private val handler = Handler(Looper.getMainLooper())
     private var searchRunnable: Runnable? = null
 
     private var isClickAllowed = true
@@ -83,8 +80,6 @@ class SearchViewModel(
     fun performSearch(query: String) {
 
         searchLiveData.postValue(SearchUIState.Loading)
-
-
         songsInteractor.searchSongs(query, object : SongsInteractor.SongsConsumer {
             override fun consume(foundSongs: List<Song>) {
                 handler.post {
@@ -110,7 +105,6 @@ class SearchViewModel(
 
         })
     }
-
 
     fun onRenewClick() {
         searchLiveData.postValue(SearchUIState.Loading)
@@ -142,25 +136,13 @@ class SearchViewModel(
         searchLiveData.value = SearchUIState.ClearInput
     }
 
-
     override fun onCleared() {
         super.onCleared()
         handler.removeCallbacksAndMessages(null)
     }
 
-
     companion object {
         private val SEARCH_DEBOUNCE_DELAY = 2000L
         private val CLICK_DEBOUNCE_DELAY = 1000L
-
-        fun getFactory(
-            songsInteractor: SongsInteractor,
-            historyInteractor: SearchHistoryInteractor
-        ): ViewModelProvider.Factory = viewModelFactory {
-            initializer {
-                SearchViewModel(songsInteractor, historyInteractor)
-            }
-        }
-
     }
 }

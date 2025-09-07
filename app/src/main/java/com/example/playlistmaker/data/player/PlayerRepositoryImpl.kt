@@ -2,6 +2,8 @@ package com.example.playlistmaker.data.player
 
 import android.media.MediaPlayer
 import com.example.playlistmaker.domain.player.PlayerRepository
+import org.koin.java.KoinJavaComponent.get
+
 import java.io.IOException
 
 class PlayerRepositoryImpl(private var mediaPlayer: MediaPlayer) : PlayerRepository {
@@ -9,16 +11,8 @@ class PlayerRepositoryImpl(private var mediaPlayer: MediaPlayer) : PlayerReposit
     override var onPreparedListener: (() -> Unit)? = null
 
     override fun setDataSource(url: String) {
-        try {
-            if (mediaPlayer == null){
-                mediaPlayer = MediaPlayer()
-            }else{
-                mediaPlayer.reset()
-            }
-        } catch (e: IllegalStateException) {
-            mediaPlayer?.release()
-            mediaPlayer = MediaPlayer()
-        }
+        mediaPlayer.release()
+        mediaPlayer = get(MediaPlayer::class.java)
 
         mediaPlayer.apply {
             try {
@@ -29,8 +23,6 @@ class PlayerRepositoryImpl(private var mediaPlayer: MediaPlayer) : PlayerReposit
             }catch (e: IOException){
                 e.printStackTrace()
             }
-
-
         }
     }
 
