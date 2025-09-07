@@ -5,9 +5,6 @@ import android.os.Looper
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewmodel.initializer
-import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.playlistmaker.domain.search.SearchHistoryInteractor
 import com.example.playlistmaker.domain.search.SongsInteractor
 import com.example.playlistmaker.domain.search.models.Song
@@ -81,20 +78,13 @@ class SearchViewModel(
     }
 
     fun performSearch(query: String) {
-
         searchLiveData.postValue(SearchUIState.Loading)
-
-
         songsInteractor.searchSongs(query, object : SongsInteractor.SongsConsumer {
             override fun consume(foundSongs: List<Song>) {
                 handler.post {
-
                     songs.clear()
                     songs.addAll(foundSongs)
-
                     val songsUi = songs.map { it.toUi() }
-
-
                     if (songs.isEmpty()) {
                         searchLiveData.value = SearchUIState.ShowEmptyPlaceholder
                     } else {
@@ -103,14 +93,11 @@ class SearchViewModel(
                     }
                 }
             }
-
             override fun onError(error: Throwable) {
                 handler.post { searchLiveData.postValue(SearchUIState.ShowNoNetworkPlaceholder) }
             }
-
         })
     }
-
 
     fun onRenewClick() {
         searchLiveData.postValue(SearchUIState.Loading)
@@ -142,25 +129,13 @@ class SearchViewModel(
         searchLiveData.value = SearchUIState.ClearInput
     }
 
-
     override fun onCleared() {
         super.onCleared()
         handler.removeCallbacksAndMessages(null)
     }
 
-
     companion object {
         private val SEARCH_DEBOUNCE_DELAY = 2000L
         private val CLICK_DEBOUNCE_DELAY = 1000L
-
-        fun getFactory(
-            songsInteractor: SongsInteractor,
-            historyInteractor: SearchHistoryInteractor
-        ): ViewModelProvider.Factory = viewModelFactory {
-            initializer {
-                SearchViewModel(songsInteractor, historyInteractor)
-            }
-        }
-
     }
 }

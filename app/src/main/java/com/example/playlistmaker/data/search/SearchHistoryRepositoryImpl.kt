@@ -10,10 +10,8 @@ class SearchHistoryRepositoryImpl(
 ) : SearchHistoryRepository {
 
     override fun getHistory(): Resource<List<Song>> {
-
         val songs = storage.getData() ?: listOf()
         return Resource.Success(songs)
-
     }
 
     override fun saveTrack(track: Song) {
@@ -24,15 +22,11 @@ class SearchHistoryRepositoryImpl(
             songs.removeAt(songs.size - 1)
         }
         storage.storeData(songs)
-
     }
-
 
     override fun clearHistory() {
         storage.clearData()
-
     }
-
 
     companion object {
         private const val MAX_HISTORY_SIZE = 10

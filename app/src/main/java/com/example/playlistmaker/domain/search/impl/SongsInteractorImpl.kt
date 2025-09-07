@@ -2,11 +2,9 @@ package com.example.playlistmaker.domain.search.impl
 
 import com.example.playlistmaker.domain.search.SongsInteractor
 import com.example.playlistmaker.domain.search.SongsRepository
-import java.util.concurrent.Executors
+import java.util.concurrent.Executor
 
-class SongsInteractorImpl(private val repository: SongsRepository) : SongsInteractor {
-
-    private val executor = Executors.newCachedThreadPool()
+class SongsInteractorImpl(private val repository: SongsRepository, private val executor: Executor) : SongsInteractor {
 
     override fun searchSongs(
         expression: String,
@@ -19,7 +17,6 @@ class SongsInteractorImpl(private val repository: SongsRepository) : SongsIntera
             } catch (e: Exception){
                 consumer.onError(e)
             }
-
-            }
+        }
     }
 }

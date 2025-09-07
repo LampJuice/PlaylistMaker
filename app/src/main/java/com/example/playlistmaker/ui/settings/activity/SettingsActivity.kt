@@ -2,31 +2,22 @@ package com.example.playlistmaker.ui.settings.activity
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.ViewModelProvider
-import com.example.playlistmaker.creator.Creator
 import com.example.playlistmaker.databinding.ActivitySettingsBinding
 import com.example.playlistmaker.domain.sharing.ExternalNavigator
 import com.example.playlistmaker.ui.settings.view_model.SettingsEvent
 import com.example.playlistmaker.ui.settings.view_model.SettingsViewModel
+import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SettingsActivity : AppCompatActivity() {
-    private lateinit var viewModel: SettingsViewModel
     private lateinit var binding: ActivitySettingsBinding
-    private lateinit var externalNavigator: ExternalNavigator
+    private val externalNavigator: ExternalNavigator by inject()
+    private val viewModel by viewModel<SettingsViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivitySettingsBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        externalNavigator = Creator.provideExternalNavigator(this)
-
-        viewModel = ViewModelProvider(
-            this,
-            SettingsViewModel.getFactory(
-                Creator.provideThemeInteractor(),
-                Creator.provideSharingInteractor(this)
-            )
-        )[SettingsViewModel::class.java]
 
         viewModel.observeDarkTheme.observe(this) { isDark ->
             binding.themeSwitcher.apply {

@@ -7,19 +7,20 @@ import android.text.TextWatcher
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.playlistmaker.creator.Creator
 import com.example.playlistmaker.databinding.ActivitySearchBinding
 import com.example.playlistmaker.ui.player.activity.PlayerActivity
 import com.example.playlistmaker.ui.search.models.SongUi
 import com.example.playlistmaker.ui.search.view_model.SearchUIState
 import com.example.playlistmaker.ui.search.view_model.SearchViewModel
 import com.google.gson.Gson
+import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SearchActivity : AppCompatActivity() {
 
-    private lateinit var viewModel: SearchViewModel
+    private val viewModel by viewModel<SearchViewModel>()
+    private val gson: Gson by inject()
 
     private val trackAdapter = TrackAdapter(mutableListOf()) { song ->
         if (viewModel.onTrackClick(song)) {
@@ -35,19 +36,10 @@ class SearchActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivitySearchBinding
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivitySearchBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-        viewModel = ViewModelProvider(
-            this,
-            SearchViewModel.getFactory(
-                Creator.provideSongsInteractor(),
-                Creator.provideSearchHistoryInteractor()
-            )
-        )[SearchViewModel::class.java]
 
         binding.recyclerView.layoutManager = LinearLayoutManager(this)
         binding.recyclerView.adapter = trackAdapter
@@ -119,14 +111,13 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun openPlayer(song: SongUi) {
-        val songJson = Gson().toJson(song)
+        val songJson = gson.toJson(song)
         val intent = Intent(this, PlayerActivity::class.java)
         intent.putExtra(EXTRA_TRACK, songJson)
         startActivity(intent)
     }
 
     companion object {
-
         const val EXTRA_TRACK = "EXTRA_TRACK"
     }
 }
