@@ -26,6 +26,13 @@
         android:textFontWeight="400"
         android:textSize="13sp"
     </style>
+    <style name="tablayout_text" parent="TextAppearance.MaterialComponents.Body1">
+        <item name="android:fontFamily">@font/ys_display_medium</item>
+        <item name="android:textFontWeight">500</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textSize">@dimen/ph_button_text</item>
+
+</style>
     <style name="button_main" parent="Widget.MaterialComponents.Button.UnelevatedButton">
         <item name="backgroundTint">@color/white</item>
         <item name="android:textAllCaps">false</item>
