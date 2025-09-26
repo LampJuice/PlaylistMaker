@@ -10,9 +10,7 @@ class SearchHistoryInteractorImpl(private val repository: SearchHistoryRepositor
         consumer.consume(repository.getHistory().data)
     }
 
-
     override fun saveTrack(track: Song) = repository.saveTrack(track)
-
 
     override fun clearHistory() = repository.clearHistory()
 

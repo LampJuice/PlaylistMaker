@@ -3,9 +3,6 @@ package com.example.playlistmaker.ui.player.view_model
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewmodel.initializer
-import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.playlistmaker.domain.player.PlayerInteractor
 import com.example.playlistmaker.toMinutesAndSeconds
 
@@ -41,15 +38,7 @@ class PlayerViewModel(private val playerInteractor: PlayerInteractor): ViewModel
         playerInteractor.release()
     }
 
-    fun omPause(){
+    fun onPause(){
         playerInteractor.pause()
-    }
-
-    companion object{
-        fun getFactory(playerInteractor: PlayerInteractor): ViewModelProvider.Factory = viewModelFactory {
-            initializer {
-                PlayerViewModel(playerInteractor)
-            }
-        }
     }
 }

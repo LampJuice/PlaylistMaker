@@ -33,10 +33,11 @@ class PlayerInteractorImpl(
             playerState = PlayerState.PREPARED
             onStateChange?.invoke(playerState)
             isPreparing = false
+            play()
         }
         repository.onCompletionListener = {
             timer.stop()
-            playerState = PlayerState.PREPARED
+            playerState = PlayerState.DEFAULT
             onStateChange?.invoke(playerState)
             onUpdateTime?.invoke(0)
         }

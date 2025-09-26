@@ -2,21 +2,22 @@ package com.example.playlistmaker.ui.player.activity
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
-import com.example.playlistmaker.creator.Creator
 import com.example.playlistmaker.databinding.ActivityPlayerBinding
 import com.example.playlistmaker.domain.player.models.PlayerState
 import com.example.playlistmaker.ui.player.view_model.PlayerViewModel
 import com.example.playlistmaker.ui.search.activity.SearchActivity
 import com.example.playlistmaker.ui.search.models.SongUi
 import com.google.gson.Gson
+import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class PlayerActivity : AppCompatActivity() {
 
-    private lateinit var viewModel: PlayerViewModel
+    private val viewModel by viewModel<PlayerViewModel>()
+    private val gson: Gson by inject()
     private lateinit var binding: ActivityPlayerBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -25,23 +26,16 @@ class PlayerActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         val songJson = intent.getStringExtra(SearchActivity.Companion.EXTRA_TRACK)
-        val song = Gson().fromJson(songJson, SongUi::class.java)
-
-        viewModel = ViewModelProvider(
-            this,
-            PlayerViewModel.getFactory(Creator.providePlayerInteractor())
-        )[PlayerViewModel::class.java]
+        val song = gson.fromJson(songJson, SongUi::class.java)
 
         viewModel.setTrackUrl(song?.previewUrl ?: "")
 
         viewModel.observeUiState.observe(this) { state ->
-
             val iconPlay = when (state.playerState) {
                 PlayerState.PLAYING -> R.drawable.ic_pause_100
                 else -> R.drawable.ic_play_100
             }
             binding.playButton.setImageResource(iconPlay)
-
             val iconLike = if (state.isLiked) R.drawable.ic_like_pressed_51 else R.drawable.ic_like_51
             binding.likeButton.setImageResource(iconLike)
 
@@ -73,6 +67,6 @@ class PlayerActivity : AppCompatActivity() {
 
     override fun onPause() {
         super.onPause()
-        viewModel.omPause()
+        viewModel.onPause()
     }
 }
