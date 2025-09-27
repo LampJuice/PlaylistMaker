@@ -45,6 +45,9 @@ android {
 }
 
 dependencies {
+    implementation(libs.androidx.viewpager2)
+    implementation(libs.androidx.fragment.ktx)
+
     implementation(libs.koin.android)
 
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
