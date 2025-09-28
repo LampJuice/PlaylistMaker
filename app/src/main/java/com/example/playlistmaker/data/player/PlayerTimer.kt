@@ -8,14 +8,14 @@ class PlayerTimer(
     private val playerRepository: PlayerRepository,
     private val updateInterval: Long = 300L
 ) {
-    private val handler  = Handler(Looper.getMainLooper())
+    private val handler = Handler(Looper.getMainLooper())
     private var runnable: Runnable? = null
 
     var onTick: ((Int) -> Unit)? = null
 
     fun start() {
         if (runnable != null) return
-        runnable = object : Runnable{
+        runnable = object : Runnable {
             override fun run() {
                 onTick?.invoke(playerRepository.getCurrentPosition())
                 handler.postDelayed(this, updateInterval)

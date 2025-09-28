@@ -10,5 +10,6 @@
     <color name="ic_tint">#FFFFFFFF</color>
     <color name="ic_tint_2">#FFFFFFFF</color>
     <color name="search_hint">#1A1B22</color>
+    <color name="ic_bot_nav">#FFFFFFFF</color>
 
 </resources>

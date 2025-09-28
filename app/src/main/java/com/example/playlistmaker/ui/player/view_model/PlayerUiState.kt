@@ -6,5 +6,4 @@ data class PlayerUiState(
     val playerState: PlayerState = PlayerState.DEFAULT,
     val playTime: String = "00:00",
     val isLiked: Boolean = false
-) {
-}
+)

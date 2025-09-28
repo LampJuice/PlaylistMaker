@@ -6,9 +6,9 @@ import com.example.playlistmaker.data.search.dto.SearchResponse
 import com.example.playlistmaker.domain.search.SongsRepository
 import com.example.playlistmaker.domain.search.models.Song
 
-class SongsRepositoryImpl(private val networkClient: NetworkClient): SongsRepository {
+class SongsRepositoryImpl(private val networkClient: NetworkClient) : SongsRepository {
     override fun searchSongs(expression: String): List<Song> {
-        val  response = networkClient.doRequest(SearchRequest(expression))
+        val response = networkClient.doRequest(SearchRequest(expression))
         if (response.resultCode == 200) {
             return (response as SearchResponse).results.map {
 

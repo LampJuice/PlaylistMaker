@@ -1,42 +1,54 @@
-package com.example.playlistmaker.ui.player.activity
+package com.example.playlistmaker.ui.player.fragment
 
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
-import com.example.playlistmaker.databinding.ActivityPlayerBinding
+import com.example.playlistmaker.databinding.FragmentPlayerBinding
 import com.example.playlistmaker.domain.player.models.PlayerState
 import com.example.playlistmaker.ui.player.view_model.PlayerViewModel
-import com.example.playlistmaker.ui.search.activity.SearchActivity
+import com.example.playlistmaker.ui.search.fragment.SearchFragment
 import com.example.playlistmaker.ui.search.models.SongUi
 import com.google.gson.Gson
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class PlayerActivity : AppCompatActivity() {
+class PlayerFragment : Fragment() {
+    private var _binding: FragmentPlayerBinding? = null
+    private val binding get() = _binding!!
 
     private val viewModel by viewModel<PlayerViewModel>()
     private val gson: Gson by inject()
-    private lateinit var binding: ActivityPlayerBinding
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        _binding = FragmentPlayerBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        binding = ActivityPlayerBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
-        val songJson = intent.getStringExtra(SearchActivity.Companion.EXTRA_TRACK)
+        val songJson = arguments?.getString(SearchFragment.Companion.EXTRA_TRACK)
         val song = gson.fromJson(songJson, SongUi::class.java)
 
         viewModel.setTrackUrl(song?.previewUrl ?: "")
 
-        viewModel.observeUiState.observe(this) { state ->
+        viewModel.observeUiState.observe(viewLifecycleOwner) { state ->
             val iconPlay = when (state.playerState) {
                 PlayerState.PLAYING -> R.drawable.ic_pause_100
                 else -> R.drawable.ic_play_100
             }
             binding.playButton.setImageResource(iconPlay)
-            val iconLike = if (state.isLiked) R.drawable.ic_like_pressed_51 else R.drawable.ic_like_51
+            val iconLike =
+                if (state.isLiked) R.drawable.ic_like_pressed_51 else R.drawable.ic_like_51
             binding.likeButton.setImageResource(iconLike)
 
             binding.playTime.text = state.playTime
@@ -61,7 +73,12 @@ class PlayerActivity : AppCompatActivity() {
 
             playButton.setOnClickListener { viewModel.onPlayPauseClick() }
             likeButton.setOnClickListener { viewModel.onLikeClick() }
-            backArrow.setOnClickListener { finish() }
+            backArrow.setOnClickListener {
+                findNavController().popBackStack(
+                    R.id.searchFragment2,
+                    false
+                )
+            }
         }
     }
 
@@ -69,4 +86,10 @@ class PlayerActivity : AppCompatActivity() {
         super.onPause()
         viewModel.onPause()
     }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
 }
