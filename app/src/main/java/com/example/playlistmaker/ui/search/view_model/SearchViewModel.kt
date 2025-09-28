@@ -29,6 +29,11 @@ class SearchViewModel(
     private var isClickAllowed = true
 
     fun onFocusGained(text: String, hasFocus: Boolean) {
+        if (!text.isEmpty()){
+            searchLiveData.postValue(SearchUIState.ShowSearchResults(songs.map { it.toUi() }))
+            return
+        }
+
         if (text.isEmpty() && hasFocus) {
             historyInteractor.getHistory(object : SearchHistoryInteractor.HistoryConsumer {
                 override fun consume(searchHistory: List<Song>?) {
@@ -48,6 +53,8 @@ class SearchViewModel(
     }
 
     fun onSearchTextChanged(text: String, hasFocus: Boolean) {
+
+        if (text == lastQuery) return
         searchRunnable?.let { handler.removeCallbacks(it) }
 
         if (text.isEmpty() && hasFocus) {

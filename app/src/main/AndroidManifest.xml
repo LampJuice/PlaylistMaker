@@ -25,24 +25,5 @@
                     <category android:name="android.intent.category.LAUNCHER" />
                 </intent-filter>
         </activity>
-
-<!--        <activity-->
-<!--            android:name=".ui.player.activity.PlayerActivity"-->
-<!--            android:exported="false" />-->
-<!--        <activity-->
-<!--            android:name=".ui.search.activity.SearchActivity"-->
-<!--            android:exported="false" />-->
-<!--        <activity-->
-<!--            android:name=".ui.mediateka.activity.MediatekaActivity"-->
-<!--            android:exported="false" />-->
-<!--        <activity-->
-<!--            android:name=".ui.settings.activity.SettingsActivity"-->
-<!--            android:exported="false" />-->
-<!--        <activity-->
-<!--            android:name=".ui.main.activity.MainActivity"-->
-<!--            android:exported="true"/>-->
-
-
     </application>
-
 </manifest>

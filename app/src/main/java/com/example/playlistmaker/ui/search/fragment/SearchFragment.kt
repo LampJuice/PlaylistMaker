@@ -73,7 +73,12 @@ class SearchFragment : Fragment() {
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                viewModel.onSearchTextChanged(s.toString(), binding.searchEdittext.hasFocus())
+                if (s.isNullOrEmpty()){
+                    viewModel.onSearchTextChanged("",binding.searchEdittext.hasFocus())
+                } else if (s.toString() != viewModel.lastQuery) {
+                    viewModel.onSearchTextChanged(s.toString(), binding.searchEdittext.hasFocus())
+                }
+                //viewModel.onSearchTextChanged(s.toString(), binding.searchEdittext.hasFocus())
                 binding.clearText.visibility =
                     if (s.isNullOrEmpty()) View.INVISIBLE else View.VISIBLE
             }
@@ -130,6 +135,11 @@ class SearchFragment : Fragment() {
         val songJson = gson.toJson(song)
         val bundle = bundleOf(EXTRA_TRACK to songJson)
         findNavController().navigate(R.id.action_searchFragment2_to_playerFragment2, bundle)
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     companion object {

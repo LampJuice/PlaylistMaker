@@ -55,5 +55,12 @@ class SettingsFragment : Fragment() {
                 is SettingsEvent.ShareApp -> externalNavigator.shareText(event.link)
             }
         }
+
+
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }
