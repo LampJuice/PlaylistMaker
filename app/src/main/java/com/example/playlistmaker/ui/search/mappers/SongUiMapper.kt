@@ -3,7 +3,7 @@ package com.example.playlistmaker.ui.search.mappers
 import com.example.playlistmaker.domain.search.models.Song
 import com.example.playlistmaker.ui.search.models.SongUi
 
-fun Song.toUi(): SongUi{
+fun Song.toUi(): SongUi {
     return SongUi(
         trackName = trackName,
         artistName = artistName,
@@ -19,22 +19,22 @@ fun Song.toUi(): SongUi{
 
 }
 
-private fun formatTrackTime(mills: Long): String{
-    val mins = mills/1000/60
-    val seconds = (mills/1000)%60
+private fun formatTrackTime(mills: Long): String {
+    val mins = mills / 1000 / 60
+    val seconds = (mills / 1000) % 60
     return "%d:%02d".format(mins, seconds)
 }
 
 fun SongUi.toDomain(): Song {
     return Song(
-        trackName = trackName ?:"",
-        artistName = artistName ?:"",
-        trackTimeMillis =parseTrackTime(trackTime),
-        artworkUrl100 = artworkUrl100 ?:"",
+        trackName = trackName ?: "",
+        artistName = artistName ?: "",
+        trackTimeMillis = parseTrackTime(trackTime),
+        artworkUrl100 = artworkUrl100 ?: "",
         trackId = trackId ?: 0,
         collectionName = collectionName ?: "",
-        releaseDate = releaseDate ?:"",
-        country = country?:"",
+        releaseDate = releaseDate ?: "",
+        country = country ?: "",
         primaryGenreName = primaryGenreName ?: "",
         previewUrl = previewUrl ?: ""
     )

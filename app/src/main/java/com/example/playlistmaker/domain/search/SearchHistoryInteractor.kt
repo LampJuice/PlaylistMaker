@@ -6,7 +6,7 @@ interface SearchHistoryInteractor {
     fun getHistory(consumer: HistoryConsumer)
     fun saveTrack(track: Song)
     fun clearHistory()
-    interface HistoryConsumer{
+    interface HistoryConsumer {
         fun consume(searchHistory: List<Song>?)
     }
 }

@@ -15,7 +15,7 @@ import java.util.concurrent.Executor
 import java.util.concurrent.Executors
 
 val interactorModule = module {
-    factory<ThemeInteractor> { ThemeInteractorImpl(get())}
+    factory<ThemeInteractor> { ThemeInteractorImpl(get()) }
     factory<SearchHistoryInteractor> { SearchHistoryInteractorImpl(get()) }
     factory<SongsInteractor> { SongsInteractorImpl(get(), get()) }
     factory<PlayerInteractor> { PlayerInteractorImpl(get(), get()) }

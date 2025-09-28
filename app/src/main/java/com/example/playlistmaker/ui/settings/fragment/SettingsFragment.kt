@@ -1,28 +1,39 @@
-package com.example.playlistmaker.ui.settings.activity
+package com.example.playlistmaker.ui.settings.fragment
 
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
-import com.example.playlistmaker.databinding.ActivitySettingsBinding
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.fragment.app.Fragment
+import com.example.playlistmaker.databinding.FragmentSettingsBinding
 import com.example.playlistmaker.domain.sharing.ExternalNavigator
 import com.example.playlistmaker.ui.settings.view_model.SettingsEvent
 import com.example.playlistmaker.ui.settings.view_model.SettingsViewModel
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class SettingsActivity : AppCompatActivity() {
-    private lateinit var binding: ActivitySettingsBinding
+class SettingsFragment : Fragment() {
+    private var _binding: FragmentSettingsBinding? = null
+    private val binding get() = _binding!!
     private val externalNavigator: ExternalNavigator by inject()
     private val viewModel by viewModel<SettingsViewModel>()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        binding = ActivitySettingsBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        _binding = FragmentSettingsBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
-        viewModel.observeDarkTheme.observe(this) { isDark ->
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        viewModel.observeDarkTheme.observe(viewLifecycleOwner) { isDark ->
             binding.themeSwitcher.apply {
                 setOnCheckedChangeListener(null)
-                if(isChecked != isDark) {
+                if (isChecked != isDark) {
                     isChecked = isDark
                 }
                 setOnCheckedChangeListener { _, checked ->
@@ -32,15 +43,13 @@ class SettingsActivity : AppCompatActivity() {
         }
 
         binding.apply {
-            settingsBack.setOnClickListener { viewModel.onBackClick() }
             shareIcon.setOnClickListener { viewModel.onShareClick() }
             supportIcon.setOnClickListener { viewModel.onSupportClick() }
             agreementIcon.setOnClickListener { viewModel.onAgreementClick() }
         }
 
-        viewModel.observeEvents.observe(this) { event ->
-            when(event) {
-                SettingsEvent.Close -> finish()
+        viewModel.observeEvents.observe(viewLifecycleOwner) { event ->
+            when (event) {
                 is SettingsEvent.ContactSupport -> externalNavigator.sendEmail(event.data)
                 is SettingsEvent.OpenAgreement -> externalNavigator.openUrl(event.link)
                 is SettingsEvent.ShareApp -> externalNavigator.shareText(event.link)

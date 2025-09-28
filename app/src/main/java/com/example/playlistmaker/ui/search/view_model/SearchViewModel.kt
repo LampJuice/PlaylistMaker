@@ -93,6 +93,7 @@ class SearchViewModel(
                     }
                 }
             }
+
             override fun onError(error: Throwable) {
                 handler.post { searchLiveData.postValue(SearchUIState.ShowNoNetworkPlaceholder) }
             }

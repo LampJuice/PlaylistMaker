@@ -5,7 +5,7 @@ import com.example.playlistmaker.data.ResourceProvider
 import com.example.playlistmaker.domain.sharing.SharingInteractor
 import com.example.playlistmaker.domain.sharing.models.EmailData
 
-class SharingInteractorImpl(private val resourceProvider: ResourceProvider): SharingInteractor {
+class SharingInteractorImpl(private val resourceProvider: ResourceProvider) : SharingInteractor {
 
     override fun getShareAppLink(): String {
         return resourceProvider.getString(R.string.android_dev)

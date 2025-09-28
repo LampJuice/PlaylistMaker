@@ -1,4 +1,4 @@
-package com.example.playlistmaker.ui.search.activity
+package com.example.playlistmaker.ui.search.fragment
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -9,7 +9,8 @@ import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.TrackViewBinding
 import com.example.playlistmaker.ui.search.models.SongUi
 
-class TrackViewHolder(private val binding: TrackViewBinding) : RecyclerView.ViewHolder(binding.root) {
+class TrackViewHolder(private val binding: TrackViewBinding) :
+    RecyclerView.ViewHolder(binding.root) {
 
     private val cornerRadiusPx =
         itemView.context.resources.getDimensionPixelSize(R.dimen.round_corners_cover)
@@ -27,8 +28,8 @@ class TrackViewHolder(private val binding: TrackViewBinding) : RecyclerView.View
         itemView.setOnClickListener { onTrackClick(model) }
     }
 
-    companion object{
-        fun from(parent: ViewGroup): TrackViewHolder{
+    companion object {
+        fun from(parent: ViewGroup): TrackViewHolder {
             val inflater = LayoutInflater.from(parent.context)
             val binding = TrackViewBinding.inflate(inflater, parent, false)
             return TrackViewHolder(binding)

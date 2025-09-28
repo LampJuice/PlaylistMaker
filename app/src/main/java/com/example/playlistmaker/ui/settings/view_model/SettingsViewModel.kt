@@ -23,9 +23,6 @@ class SettingsViewModel(
         isDarkTheme.value = themeInteractor.isDarkTheme()
     }
 
-    fun onBackClick() {
-        events.postValue(SettingsEvent.Close)
-    }
 
     fun onThemeSwitch(enabled: Boolean) {
         themeInteractor.setDarkTheme(enabled)

@@ -13,5 +13,6 @@
     <color name="search_hint">#AEAFB4</color>
     <color name="txt_grey">#AEAFB4</color>
     <color name="red">#F56B6C</color>
+    <color name="ic_bot_nav">#1A1B22</color>
 
 </resources>

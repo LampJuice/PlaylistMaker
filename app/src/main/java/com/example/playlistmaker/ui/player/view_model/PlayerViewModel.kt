@@ -6,8 +6,8 @@ import androidx.lifecycle.ViewModel
 import com.example.playlistmaker.domain.player.PlayerInteractor
 import com.example.playlistmaker.toMinutesAndSeconds
 
-class PlayerViewModel(private val playerInteractor: PlayerInteractor): ViewModel() {
-    private val  playerUiState = MutableLiveData(PlayerUiState())
+class PlayerViewModel(private val playerInteractor: PlayerInteractor) : ViewModel() {
+    private val playerUiState = MutableLiveData(PlayerUiState())
     val observeUiState: LiveData<PlayerUiState> = playerUiState
 
     private var currentTrackUrl: String? = null
@@ -25,11 +25,13 @@ class PlayerViewModel(private val playerInteractor: PlayerInteractor): ViewModel
     fun setTrackUrl(url: String) {
         currentTrackUrl = url
     }
+
     fun onPlayPauseClick() {
         currentTrackUrl?.let { playerInteractor.playbackControl(it) }
     }
+
     fun onLikeClick() {
-       val current = playerUiState.value ?: PlayerUiState()
+        val current = playerUiState.value ?: PlayerUiState()
         playerUiState.postValue((current.copy(isLiked = !current.isLiked)))
     }
 
@@ -38,7 +40,7 @@ class PlayerViewModel(private val playerInteractor: PlayerInteractor): ViewModel
         playerInteractor.release()
     }
 
-    fun onPause(){
+    fun onPause() {
         playerInteractor.pause()
     }
 }

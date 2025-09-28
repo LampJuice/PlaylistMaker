@@ -2,25 +2,12 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
     android:background="?attr/colorPrimary"
     android:orientation="vertical"
-    >
+    tools:context=".ui.settings.fragment.SettingsFragment">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center"
-        android:paddingHorizontal="@dimen/main_padding"
-        android:paddingBottom="@dimen/main_padding">
 
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_back_arrow_24"
-            android:id="@+id/settings_back"
-            android:paddingHorizontal="2dp"
-            />
 
         <TextView
             android:layout_width="match_parent"
@@ -31,10 +18,12 @@
             android:text="@string/settings"
             android:textSize="@dimen/text_main"
             android:textStyle="bold"
-            android:padding="@dimen/main_padding"
+            android:paddingStart="@dimen/main_padding"
+            android:paddingBottom="@dimen/main_padding"
+            android:paddingTop="@dimen/secondary_padding"
+            android:layout_marginBottom="24dp"
             />
 
-    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"

@@ -3,35 +3,28 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:backgroundTint="@color/background_menu"
-    android:orientation="vertical">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@color/background_menu"
+    android:orientation="vertical"
+    tools:context=".ui.mediateka.fragments.MediatekaFragment">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:orientation="horizontal"
-        android:paddingHorizontal="@dimen/main_padding">
 
-        <ImageView
-            android:id="@+id/back_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:contentDescription="@string/back"
-            android:paddingHorizontal="2dp"
-            android:src="@drawable/ic_back_arrow_24" />
+
+
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:fontFamily="@font/ys_display_medium"
-            android:padding="@dimen/main_padding"
+
+            android:paddingStart="@dimen/main_padding"
+            android:paddingTop="@dimen/secondary_padding"
+            android:paddingBottom="@dimen/main_padding"
             android:text="@string/media"
             android:textAllCaps="false"
             android:textColor="@color/text_menu"
             android:textSize="@dimen/text_main"
             android:textStyle="bold" />
-    </LinearLayout>
 
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tabLayout"
@@ -40,6 +33,7 @@
         android:layout_marginStart="@dimen/main_padding"
         android:layout_marginEnd="@dimen/main_padding"
         app:tabIndicatorColor="@color/text_menu"
+        android:background="@color/background_menu"
 
         app:tabIndicatorFullWidth="true"
         app:tabPaddingEnd="@dimen/main_padding"

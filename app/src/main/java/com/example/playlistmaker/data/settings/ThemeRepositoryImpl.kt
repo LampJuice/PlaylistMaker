@@ -5,7 +5,7 @@ import com.example.playlistmaker.data.StorageClient
 import com.example.playlistmaker.domain.settings.ThemeRepository
 
 class ThemeRepositoryImpl(private val storage: StorageClient<Boolean>) : ThemeRepository {
-    override fun isDarkTheme(): Boolean = storage.getData() ?: false
+    override fun isDarkTheme(): Boolean = storage.getData() == true
 
     override fun storeTheme(enabled: Boolean) = storage.storeData(enabled)
 

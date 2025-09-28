@@ -13,10 +13,13 @@ constraintlayout = "2.2.0"
 retrofit = "2.9.0"
 glide = "4.14.2"
 koin = "3.3.0"
-fragment = "1.5.5"
 viewpager2 = "1.0.0"
+fragment = "1.5.6"
+navigation = "2.5.3"
 
 [libraries]
+androidx-navigation-fragment = {module = "androidx.navigation:navigation-fragment-ktx", version.ref = "navigation"}
+androidx-navigation-ui = {module = "androidx.navigation:navigation-ui-ktx", version.ref = "navigation"}
 androidx-viewpager2 = {module = "androidx.viewpager2:viewpager2", version.ref = "viewpager2"}
 androidx-fragment-ktx = { module = "androidx.fragment:fragment-ktx", version.ref = "fragment" }
 

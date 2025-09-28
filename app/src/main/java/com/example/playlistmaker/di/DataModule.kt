@@ -24,10 +24,11 @@ val dataModule = module {
     factory { MediaPlayer() }
     single { Gson() }
 
-    single { Retrofit.Builder()
-        .baseUrl("https://itunes.apple.com")
-        .addConverterFactory(GsonConverterFactory.create())
-        .build()
+    single {
+        Retrofit.Builder()
+            .baseUrl("https://itunes.apple.com")
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
     }
     single<ITunesAPI> { get<Retrofit>().create(ITunesAPI::class.java) }
 
@@ -52,6 +53,6 @@ val dataModule = module {
     single { PlayerTimer(get()) }
     single<NetworkClient> { RetrofitNetworkClient(get()) }
     single<ExternalNavigator> { ExternalNavigatorImpl(get()) }
-    single <ResourceProvider> { ResourceProviderImpl(get()) }
+    single<ResourceProvider> { ResourceProviderImpl(get()) }
 
 }

@@ -15,7 +15,7 @@ class PlayerRepositoryImpl(
 
         if (url.isBlank()) return
 
-        mediaPlayer.apply{
+        mediaPlayer.apply {
             try {
 
                 reset()
@@ -24,7 +24,7 @@ class PlayerRepositoryImpl(
                 setOnCompletionListener { onCompletionListener?.invoke() }
                 prepareAsync()
 
-            } catch (e: Exception){
+            } catch (e: Exception) {
                 e.printStackTrace()
             }
         }
@@ -38,9 +38,17 @@ class PlayerRepositoryImpl(
         mediaPlayer.pause()
     }
 
-    override fun getCurrentPosition(): Int = try {mediaPlayer.currentPosition } catch (_: Exception) {0}
+    override fun getCurrentPosition(): Int = try {
+        mediaPlayer.currentPosition
+    } catch (_: Exception) {
+        0
+    }
 
-    override fun isPlaying(): Boolean = try {mediaPlayer.isPlaying } catch (_: Exception) {false}
+    override fun isPlaying(): Boolean = try {
+        mediaPlayer.isPlaying
+    } catch (_: Exception) {
+        false
+    }
 
     override fun release() {
         mediaPlayer.release()

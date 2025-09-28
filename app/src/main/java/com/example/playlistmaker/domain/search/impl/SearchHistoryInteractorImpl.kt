@@ -6,7 +6,7 @@ import com.example.playlistmaker.domain.search.models.Song
 
 class SearchHistoryInteractorImpl(private val repository: SearchHistoryRepository) :
     SearchHistoryInteractor {
-    override fun getHistory(consumer: SearchHistoryInteractor.HistoryConsumer){
+    override fun getHistory(consumer: SearchHistoryInteractor.HistoryConsumer) {
         consumer.consume(repository.getHistory().data)
     }
 
