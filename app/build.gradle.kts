@@ -45,6 +45,7 @@ android {
 }
 
 dependencies {
+    implementation(libs.jetbrains.kotlin.coroutines)
     implementation(libs.androidx.navigation.ui)
     implementation(libs.androidx.navigation.fragment)
     implementation(libs.androidx.viewpager2)

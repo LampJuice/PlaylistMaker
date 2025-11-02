@@ -4,16 +4,17 @@ import android.media.MediaPlayer
 import com.example.playlistmaker.data.NetworkClient
 import com.example.playlistmaker.data.ResourceProvider
 import com.example.playlistmaker.data.StorageClient
-import com.example.playlistmaker.data.player.PlayerTimer
 import com.example.playlistmaker.data.search.network.ITunesAPI
 import com.example.playlistmaker.data.search.network.RetrofitNetworkClient
 import com.example.playlistmaker.data.sharing.ExternalNavigatorImpl
 import com.example.playlistmaker.data.sharing.ResourceProviderImpl
 import com.example.playlistmaker.data.storage.PrefsStorageClient
+import com.example.playlistmaker.domain.player.impl.PlayerInteractorImpl
 import com.example.playlistmaker.domain.search.models.Song
 import com.example.playlistmaker.domain.sharing.ExternalNavigator
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import kotlinx.coroutines.CoroutineScope
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
@@ -50,9 +51,10 @@ val dataModule = module {
             gson = get()
         )
     }
-    single { PlayerTimer(get()) }
+    //single { PlayerTimer(get(), coroutineScope = get()) }
     single<NetworkClient> { RetrofitNetworkClient(get()) }
     single<ExternalNavigator> { ExternalNavigatorImpl(get()) }
     single<ResourceProvider> { ResourceProviderImpl(get()) }
+    factory { (scope: CoroutineScope) -> PlayerInteractorImpl(get(), scope) }
 
 }

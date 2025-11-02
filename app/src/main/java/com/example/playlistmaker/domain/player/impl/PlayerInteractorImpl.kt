@@ -4,13 +4,16 @@ import com.example.playlistmaker.data.player.PlayerTimer
 import com.example.playlistmaker.domain.player.PlayerInteractor
 import com.example.playlistmaker.domain.player.PlayerRepository
 import com.example.playlistmaker.domain.player.models.PlayerState
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class PlayerInteractorImpl(
     private val repository: PlayerRepository,
-    private val timer: PlayerTimer
+    private val coroutineScope: CoroutineScope
 ) : PlayerInteractor {
 
-
+    private val timer = PlayerTimer(repository, coroutineScope = coroutineScope)
     override var playerState: PlayerState = PlayerState.DEFAULT
         private set
 
@@ -29,6 +32,7 @@ class PlayerInteractorImpl(
 
         playerState = PlayerState.DEFAULT
         onStateChange?.invoke(playerState)
+        onUpdateTime?.invoke(0)
         repository.onPreparedListener = {
             playerState = PlayerState.PREPARED
             onStateChange?.invoke(playerState)
@@ -39,7 +43,10 @@ class PlayerInteractorImpl(
             timer.stop()
             playerState = PlayerState.DEFAULT
             onStateChange?.invoke(playerState)
-            onUpdateTime?.invoke(0)
+            coroutineScope.launch {
+                delay(50)
+                onUpdateTime?.invoke(0)
+            }
         }
         repository.setDataSource(url)
     }
@@ -64,6 +71,7 @@ class PlayerInteractorImpl(
 
     override fun release() {
         timer.stop()
+
         repository.release()
         playerState = PlayerState.DEFAULT
         onStateChange?.invoke(playerState)

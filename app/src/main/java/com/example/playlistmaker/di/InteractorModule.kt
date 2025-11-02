@@ -10,6 +10,7 @@ import com.example.playlistmaker.domain.settings.ThemeInteractor
 import com.example.playlistmaker.domain.settings.impl.ThemeInteractorImpl
 import com.example.playlistmaker.domain.sharing.SharingInteractor
 import com.example.playlistmaker.domain.sharing.impl.SharingInteractorImpl
+import kotlinx.coroutines.CoroutineScope
 import org.koin.dsl.module
 import java.util.concurrent.Executor
 import java.util.concurrent.Executors
@@ -17,8 +18,8 @@ import java.util.concurrent.Executors
 val interactorModule = module {
     factory<ThemeInteractor> { ThemeInteractorImpl(get()) }
     factory<SearchHistoryInteractor> { SearchHistoryInteractorImpl(get()) }
-    factory<SongsInteractor> { SongsInteractorImpl(get(), get()) }
-    factory<PlayerInteractor> { PlayerInteractorImpl(get(), get()) }
+    factory<SongsInteractor> { SongsInteractorImpl(get()) }
+    factory { (scope: CoroutineScope) -> PlayerInteractorImpl(get(), scope) as PlayerInteractor }
     factory<SharingInteractor> { SharingInteractorImpl(get()) }
 
     single<Executor> { Executors.newCachedThreadPool() }

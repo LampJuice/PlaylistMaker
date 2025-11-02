@@ -73,8 +73,8 @@ class SearchFragment : Fragment() {
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                if (s.isNullOrEmpty()){
-                    viewModel.onSearchTextChanged("",binding.searchEdittext.hasFocus())
+                if (s.isNullOrEmpty()) {
+                    viewModel.onSearchTextChanged("", binding.searchEdittext.hasFocus())
                 } else if (s.toString() != viewModel.lastQuery) {
                     viewModel.onSearchTextChanged(s.toString(), binding.searchEdittext.hasFocus())
                 }

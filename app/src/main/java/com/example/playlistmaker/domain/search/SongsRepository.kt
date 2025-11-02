@@ -1,7 +1,8 @@
 package com.example.playlistmaker.domain.search
 
 import com.example.playlistmaker.domain.search.models.Song
+import kotlinx.coroutines.flow.Flow
 
 interface SongsRepository {
-    fun searchSongs(expression: String): List<Song>
+    fun searchSongs(expression: String): Flow<List<Song>>
 }
