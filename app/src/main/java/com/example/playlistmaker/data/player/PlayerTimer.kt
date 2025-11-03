@@ -19,7 +19,7 @@ class PlayerTimer(
     var onTick: ((Int) -> Unit)? = null
 
     fun start() {
-        if (timerJob != null) return
+        if (timerJob?.isActive == true) return
         timerJob = coroutineScope.launch {
             delay(100L)
             while (isActive) {

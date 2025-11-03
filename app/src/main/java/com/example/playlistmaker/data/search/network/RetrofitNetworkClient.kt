@@ -17,10 +17,6 @@ class RetrofitNetworkClient(private val api: ITunesAPI) : NetworkClient {
                     Response().apply { resultCode = 500 }
                 }
             }
-//            val resp = api.searchSong(dto.expression).execute()
-//            val body = resp.body() ?: Response()
-//
-//            return body.apply { resultCode = resp.code() }
         } else {
             return Response().apply { resultCode = 400 }
         }
