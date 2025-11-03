@@ -1,17 +1,18 @@
 package com.example.playlistmaker.ui.search.view_model
 
-import android.os.Handler
-import android.os.Looper
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.playlistmaker.domain.search.SearchHistoryInteractor
 import com.example.playlistmaker.domain.search.SongsInteractor
 import com.example.playlistmaker.domain.search.models.Song
 import com.example.playlistmaker.ui.search.mappers.toDomain
 import com.example.playlistmaker.ui.search.mappers.toUi
 import com.example.playlistmaker.ui.search.models.SongUi
-import kotlinx.coroutines.Runnable
+import com.example.playlistmaker.utils.debounce
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class SearchViewModel(
     private val songsInteractor: SongsInteractor,
@@ -23,13 +24,18 @@ class SearchViewModel(
 
     private val songs = mutableListOf<Song>()
     var lastQuery: String? = null
-    private val handler = Handler(Looper.getMainLooper())
-    private var searchRunnable: Runnable? = null
+    private val trackSearchDebounce = debounce<String>(
+        SEARCH_DEBOUNCE_DELAY,
+        viewModelScope,
+        true
+    ) { changedQuery ->
+        performSearch(changedQuery)
+    }
 
     private var isClickAllowed = true
 
     fun onFocusGained(text: String, hasFocus: Boolean) {
-        if (!text.isEmpty()){
+        if (!text.isEmpty()) {
             searchLiveData.postValue(SearchUIState.ShowSearchResults(songs.map { it.toUi() }))
             return
         }
@@ -55,7 +61,6 @@ class SearchViewModel(
     fun onSearchTextChanged(text: String, hasFocus: Boolean) {
 
         if (text == lastQuery) return
-        searchRunnable?.let { handler.removeCallbacks(it) }
 
         if (text.isEmpty() && hasFocus) {
             historyInteractor.getHistory(object : SearchHistoryInteractor.HistoryConsumer {
@@ -77,39 +82,37 @@ class SearchViewModel(
         }
 
         searchLiveData.postValue(SearchUIState.Typing)
-        searchRunnable = Runnable {
-            performSearch(text)
+        if (lastQuery != text) {
             lastQuery = text
+            trackSearchDebounce(text)
         }
-        handler.postDelayed(searchRunnable!!, SEARCH_DEBOUNCE_DELAY)
     }
 
     fun performSearch(query: String) {
         searchLiveData.postValue(SearchUIState.Loading)
-        songsInteractor.searchSongs(query, object : SongsInteractor.SongsConsumer {
-            override fun consume(foundSongs: List<Song>) {
-                handler.post {
-                    songs.clear()
-                    songs.addAll(foundSongs)
-                    val songsUi = songs.map { it.toUi() }
-                    if (songs.isEmpty()) {
-                        searchLiveData.value = SearchUIState.ShowEmptyPlaceholder
-                    } else {
-                        searchLiveData.value =
-                            SearchUIState.ShowSearchResults(songsUi.toList())
+        viewModelScope.launch {
+            try {
+                songsInteractor
+                    .searchSongs(query)
+                    .collect { foundSongs ->
+                        songs.clear()
+                        songs.addAll(foundSongs)
+                        val songUi = foundSongs.map { it.toUi() }
+                        if (songs.isEmpty()) {
+                            searchLiveData.value = SearchUIState.ShowEmptyPlaceholder
+                        } else {
+                            searchLiveData.value = SearchUIState.ShowSearchResults(songUi.toList())
+                        }
                     }
-                }
+            } catch (e: Exception) {
+                searchLiveData.value = SearchUIState.ShowNoNetworkPlaceholder
             }
 
-            override fun onError(error: Throwable) {
-                handler.post { searchLiveData.postValue(SearchUIState.ShowNoNetworkPlaceholder) }
-            }
-        })
+        }
     }
 
     fun onRenewClick() {
         searchLiveData.postValue(SearchUIState.Loading)
-
         lastQuery?.let { performSearch(it) }
     }
 
@@ -123,7 +126,10 @@ class SearchViewModel(
         val current = isClickAllowed
         if (current) {
             isClickAllowed = false
-            handler.postDelayed({ isClickAllowed = true }, CLICK_DEBOUNCE_DELAY)
+            viewModelScope.launch {
+                delay(CLICK_DEBOUNCE_DELAY)
+                isClickAllowed = true
+            }
         }
         return current
     }
@@ -137,10 +143,6 @@ class SearchViewModel(
         searchLiveData.value = SearchUIState.ClearInput
     }
 
-    override fun onCleared() {
-        super.onCleared()
-        handler.removeCallbacksAndMessages(null)
-    }
 
     companion object {
         private val SEARCH_DEBOUNCE_DELAY = 2000L

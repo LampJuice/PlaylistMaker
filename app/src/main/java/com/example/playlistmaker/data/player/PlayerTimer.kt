@@ -1,32 +1,38 @@
 package com.example.playlistmaker.data.player
 
-import android.os.Handler
-import android.os.Looper
 import com.example.playlistmaker.domain.player.PlayerRepository
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
 
 class PlayerTimer(
     private val playerRepository: PlayerRepository,
-    private val updateInterval: Long = 300L
+    private val updateInterval: Long = 300L,
+    private val coroutineScope: CoroutineScope
+
 ) {
-    private val handler = Handler(Looper.getMainLooper())
-    private var runnable: Runnable? = null
+
+    private var timerJob: Job? = null
 
     var onTick: ((Int) -> Unit)? = null
 
     fun start() {
-        if (runnable != null) return
-        runnable = object : Runnable {
-            override fun run() {
-                onTick?.invoke(playerRepository.getCurrentPosition())
-                handler.postDelayed(this, updateInterval)
+        if (timerJob?.isActive == true) return
+        timerJob = coroutineScope.launch {
+            delay(100L)
+            while (isActive) {
+                val pos = playerRepository.getCurrentPosition()
+                if (!isActive) break
+                onTick?.invoke(pos)
+                delay(updateInterval)
             }
-
         }
-        handler.post(runnable!!)
     }
 
     fun stop() {
-        runnable?.let { handler.removeCallbacks(it) }
-        runnable = null
+        timerJob?.cancel()
+        timerJob = null
     }
 }

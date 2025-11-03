@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
@@ -17,12 +18,15 @@ import com.example.playlistmaker.ui.search.models.SongUi
 import com.google.gson.Gson
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.core.parameter.parametersOf
 
 class PlayerFragment : Fragment() {
     private var _binding: FragmentPlayerBinding? = null
     private val binding get() = _binding!!
 
-    private val viewModel by viewModel<PlayerViewModel>()
+    private val viewModel: PlayerViewModel by viewModel {
+        parametersOf(viewLifecycleOwner.lifecycleScope)
+    }
     private val gson: Gson by inject()
     override fun onCreateView(
         inflater: LayoutInflater,
