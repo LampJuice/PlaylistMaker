@@ -43,7 +43,7 @@ class PlayerFragment : Fragment() {
         val songJson = arguments?.getString(SearchFragment.Companion.EXTRA_TRACK)
         val song = gson.fromJson(songJson, SongUi::class.java)
 
-        viewModel.setTrackUrl(song?.previewUrl ?: "")
+        viewModel.setTrack(song)
 
         viewModel.observeUiState.observe(viewLifecycleOwner) { state ->
             val iconPlay = when (state.playerState) {
@@ -79,8 +79,6 @@ class PlayerFragment : Fragment() {
             likeButton.setOnClickListener { viewModel.onLikeClick() }
             backArrow.setOnClickListener {
                 findNavController().popBackStack(
-                    R.id.searchFragment2,
-                    false
                 )
             }
         }

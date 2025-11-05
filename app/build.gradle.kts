@@ -3,7 +3,8 @@ plugins {
     alias(libs.plugins.kotlin.android)
 
     id("kotlin-parcelize")
-    kotlin("kapt")
+
+    id("com.google.devtools.ksp") version "1.9.0-1.0.13"
 
 }
 
@@ -45,6 +46,10 @@ android {
 }
 
 dependencies {
+    implementation(libs.androidx.room.runtime)
+    implementation(libs.androidx.room.ktx)
+    ksp(libs.androidx.room.compiler)
+
     implementation(libs.jetbrains.kotlin.coroutines)
     implementation(libs.androidx.navigation.ui)
     implementation(libs.androidx.navigation.fragment)
@@ -66,7 +71,7 @@ dependencies {
 
     implementation(libs.material)
     implementation(libs.glide)
-    annotationProcessor(libs.glide.compiler)
+    ksp(libs.glide.compiler)
 
 
     implementation(libs.androidx.core.ktx)

@@ -1,9 +1,12 @@
 package com.example.playlistmaker.di
 
+import com.example.playlistmaker.data.db.FavoritesRepositoryImpl
+import com.example.playlistmaker.data.mappers.SongDbMapper
 import com.example.playlistmaker.data.player.PlayerRepositoryImpl
 import com.example.playlistmaker.data.search.SearchHistoryRepositoryImpl
 import com.example.playlistmaker.data.search.SongsRepositoryImpl
 import com.example.playlistmaker.data.settings.ThemeRepositoryImpl
+import com.example.playlistmaker.domain.db.FavoritesRepository
 import com.example.playlistmaker.domain.player.PlayerRepository
 import com.example.playlistmaker.domain.search.SearchHistoryRepository
 import com.example.playlistmaker.domain.search.SongsRepository
@@ -15,5 +18,7 @@ val repositoryModule = module {
     single<ThemeRepository> { ThemeRepositoryImpl(get(named("themeStorage"))) }
     single<SearchHistoryRepository> { SearchHistoryRepositoryImpl(get(named("historyStorage"))) }
     factory<PlayerRepository> { PlayerRepositoryImpl(get()) }
-    single<SongsRepository> { SongsRepositoryImpl(get()) }
+    single<SongsRepository> { SongsRepositoryImpl(get(), get()) }
+    factory { SongDbMapper() }
+    single<FavoritesRepository> { FavoritesRepositoryImpl(get(),get()) }
 }
