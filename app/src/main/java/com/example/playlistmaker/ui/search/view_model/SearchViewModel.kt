@@ -63,6 +63,7 @@ class SearchViewModel(
         if (text == lastQuery) return
 
         if (text.isEmpty() && hasFocus) {
+
             historyInteractor.getHistory(object : SearchHistoryInteractor.HistoryConsumer {
                 override fun consume(searchHistory: List<Song>?) {
                     if (!searchHistory.isNullOrEmpty()) {

@@ -1,5 +1,7 @@
 package com.example.playlistmaker.di
 
+import com.example.playlistmaker.domain.db.FavoritesInteractor
+import com.example.playlistmaker.domain.db.impl.FavoritesInteractorImpl
 import com.example.playlistmaker.domain.player.PlayerInteractor
 import com.example.playlistmaker.domain.player.impl.PlayerInteractorImpl
 import com.example.playlistmaker.domain.search.SearchHistoryInteractor
@@ -23,4 +25,5 @@ val interactorModule = module {
     factory<SharingInteractor> { SharingInteractorImpl(get()) }
 
     single<Executor> { Executors.newCachedThreadPool() }
+    single<FavoritesInteractor> { FavoritesInteractorImpl(get()) }
 }

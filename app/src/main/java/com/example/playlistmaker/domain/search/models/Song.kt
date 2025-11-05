@@ -10,5 +10,7 @@ data class Song(
     val releaseDate: String,
     val country: String,
     val primaryGenreName: String,
-    val previewUrl: String
+    val previewUrl: String,
+    val addedAt: Long = 0L,
+    var isFavorite: Boolean = false
 )

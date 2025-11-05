@@ -14,9 +14,10 @@ fun Song.toUi(): SongUi {
         releaseDate = releaseDate,
         country = country,
         primaryGenreName = primaryGenreName,
-        previewUrl = previewUrl
+        previewUrl = previewUrl,
+        addedAt = addedAt,
+        isLiked = isFavorite
     )
-
 }
 
 private fun formatTrackTime(mills: Long): String {
@@ -36,7 +37,9 @@ fun SongUi.toDomain(): Song {
         releaseDate = releaseDate ?: "",
         country = country ?: "",
         primaryGenreName = primaryGenreName ?: "",
-        previewUrl = previewUrl ?: ""
+        previewUrl = previewUrl ?: "",
+        addedAt = addedAt ?: 0,
+        isFavorite = isLiked
     )
 }
 

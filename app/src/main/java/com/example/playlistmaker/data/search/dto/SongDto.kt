@@ -22,5 +22,9 @@ data class SongDto(
     @SerializedName("primaryGenreName")
     val primaryGenreName: String?,
     @SerializedName("previewUrl")
-    val previewUrl: String?
+    val previewUrl: String?,
+    @SerializedName("addetAt")
+    val addedAt: Long?,
+    @SerializedName("isLiked")
+    val isLiked: Boolean?
 )
