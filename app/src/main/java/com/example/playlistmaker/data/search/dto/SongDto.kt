@@ -23,4 +23,5 @@ data class SongDto(
     val primaryGenreName: String?,
     @SerializedName("previewUrl")
     val previewUrl: String?
+
 )

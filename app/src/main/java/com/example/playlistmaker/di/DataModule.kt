@@ -1,9 +1,11 @@
 package com.example.playlistmaker.di
 
 import android.media.MediaPlayer
+import androidx.room.Room
 import com.example.playlistmaker.data.NetworkClient
 import com.example.playlistmaker.data.ResourceProvider
 import com.example.playlistmaker.data.StorageClient
+import com.example.playlistmaker.data.db.AppDatabase
 import com.example.playlistmaker.data.search.network.ITunesAPI
 import com.example.playlistmaker.data.search.network.RetrofitNetworkClient
 import com.example.playlistmaker.data.sharing.ExternalNavigatorImpl
@@ -24,6 +26,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 val dataModule = module {
     factory { MediaPlayer() }
     single { Gson() }
+    single { get<AppDatabase>().songDao() }
 
     single {
         Retrofit.Builder()
@@ -51,10 +54,14 @@ val dataModule = module {
             gson = get()
         )
     }
-    //single { PlayerTimer(get(), coroutineScope = get()) }
     single<NetworkClient> { RetrofitNetworkClient(get()) }
     single<ExternalNavigator> { ExternalNavigatorImpl(get()) }
     single<ResourceProvider> { ResourceProviderImpl(get()) }
     factory { (scope: CoroutineScope) -> PlayerInteractorImpl(get(), scope) }
+
+    single {
+        Room.databaseBuilder(androidContext(), AppDatabase::class.java, "database.db")
+            .build()
+    }
 
 }

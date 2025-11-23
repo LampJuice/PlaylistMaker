@@ -3,14 +3,23 @@ package com.example.playlistmaker.ui.player.view_model
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.playlistmaker.domain.db.FavoritesInteractor
 import com.example.playlistmaker.domain.player.PlayerInteractor
 import com.example.playlistmaker.domain.player.models.PlayerState
+import com.example.playlistmaker.ui.search.mappers.toDomain
+import com.example.playlistmaker.ui.search.models.SongUi
 import com.example.playlistmaker.utils.toMinutesAndSeconds
+import kotlinx.coroutines.launch
 
-class PlayerViewModel(private val playerInteractor: PlayerInteractor) : ViewModel() {
+class PlayerViewModel(
+    private val playerInteractor: PlayerInteractor,
+    private val favoritesInteractor: FavoritesInteractor
+) : ViewModel() {
     private val playerUiState = MutableLiveData(PlayerUiState())
     val observeUiState: LiveData<PlayerUiState> = playerUiState
 
+    private var currentTrack: SongUi? = null
     private var currentTrackUrl: String? = null
 
 
@@ -28,8 +37,15 @@ class PlayerViewModel(private val playerInteractor: PlayerInteractor) : ViewMode
         }
     }
 
-    fun setTrackUrl(url: String) {
-        currentTrackUrl = url
+    fun setTrack(track: SongUi) {
+        currentTrackUrl = track.previewUrl
+        viewModelScope.launch {
+            val favoritesIds = favoritesInteractor.favoriteSongsIds()
+            val isLiked = favoritesIds.contains(track.trackId)
+            currentTrack = track.copy(isLiked = isLiked)
+            val current = playerUiState.value ?: PlayerUiState()
+            playerUiState.postValue(current.copy(isLiked = isLiked))
+        }
     }
 
     fun onPlayPauseClick() {
@@ -37,8 +53,19 @@ class PlayerViewModel(private val playerInteractor: PlayerInteractor) : ViewMode
     }
 
     fun onLikeClick() {
+        val track = currentTrack ?: return
         val current = playerUiState.value ?: PlayerUiState()
-        playerUiState.postValue((current.copy(isLiked = !current.isLiked)))
+        val isCurrentlyLiked = current.isLiked
+        viewModelScope.launch {
+            if (!isCurrentlyLiked) {
+                favoritesInteractor.addFavoriteSong(track.toDomain())
+            } else {
+                favoritesInteractor.deleteFavoriteSong(track.toDomain())
+            }
+        }
+        val updated = playerUiState.value ?: PlayerUiState()
+        playerUiState.postValue(updated.copy(isLiked = !isCurrentlyLiked))
+        currentTrack = track.copy(isLiked = !isCurrentlyLiked)
     }
 
     override fun onCleared() {
