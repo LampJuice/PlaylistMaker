@@ -31,8 +31,8 @@ class SongsRepositoryImpl(
                         it.country ?: "",
                         it.primaryGenreName ?: "",
                         it.previewUrl ?: "",
-                        it.addedAt ?: 0,
-                        favoriteIds.contains((songId.toString()))
+                        0L,
+                        false
                     )
                 }
                 emit(data)

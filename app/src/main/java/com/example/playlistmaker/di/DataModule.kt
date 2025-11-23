@@ -26,6 +26,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 val dataModule = module {
     factory { MediaPlayer() }
     single { Gson() }
+    single { get<AppDatabase>().songDao() }
 
     single {
         Retrofit.Builder()

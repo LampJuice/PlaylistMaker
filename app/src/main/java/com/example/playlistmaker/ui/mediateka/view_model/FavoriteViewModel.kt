@@ -7,6 +7,8 @@ import androidx.lifecycle.viewModelScope
 import com.example.playlistmaker.domain.db.FavoritesInteractor
 import com.example.playlistmaker.domain.search.models.Song
 import com.example.playlistmaker.ui.search.mappers.toUi
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 
 class FavoriteViewModel(private val favoritesInteractor: FavoritesInteractor) : ViewModel() {
@@ -19,8 +21,13 @@ class FavoriteViewModel(private val favoritesInteractor: FavoritesInteractor) : 
 
     fun showFavorites() {
         viewModelScope.launch {
-            try {
+            //try {
                 favoritesInteractor.favoriteSongs()
+                    .catch { e  ->
+                        if (e is CancellationException) throw e
+                        favoritesLiveData.value = FavoritesUiState.ShowEmptyPlaceholder
+
+                    }
                     .collect { favorites ->
                         songs.clear()
                         songs.addAll(favorites)
@@ -32,9 +39,9 @@ class FavoriteViewModel(private val favoritesInteractor: FavoritesInteractor) : 
                                 FavoritesUiState.ShowFavorites(songUi.toList())
                         }
                     }
-            } catch (e: Exception) {
-                favoritesLiveData.value = FavoritesUiState.ShowEmptyPlaceholder
-            }
+            //} catch (e: Exception) {
+
+            //}
         }
     }
 }
