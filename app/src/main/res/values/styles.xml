@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <style name="settings_option">
         <item name="android:fontFamily">@font/ys_display_regular</item>
         <item name="android:textSize">@dimen/text_regular</item>
@@ -22,17 +23,22 @@
     </style>
 
     <style name="text_player">
-        android:fontFamily="@font/ys_text_regular"
-        android:textFontWeight="400"
-        android:textSize="13sp"
+        <item name="android:fontFamily">@font/ys_display_regular</item>
+        <item name="android:textFontWeight">400</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:letterSpacing">0</item>
+        <item name="android:textColor">@color/text_menu</item>
     </style>
+
     <style name="tablayout_text" parent="TextAppearance.MaterialComponents.Body1">
         <item name="android:fontFamily">@font/ys_display_medium</item>
         <item name="android:textFontWeight">500</item>
         <item name="android:textAllCaps">false</item>
         <item name="android:textSize">@dimen/ph_button_text</item>
+        <item name="android:letterSpacing">0</item>
 
-</style>
+    </style>
+
     <style name="button_main" parent="Widget.MaterialComponents.Button.UnelevatedButton">
         <item name="backgroundTint">@color/white</item>
         <item name="android:textAllCaps">false</item>
@@ -47,5 +53,15 @@
         <item name="android:letterSpacing">0</item>
 
 
+    </style>
+
+    <style name="helper_text_top" parent="TextAppearance.MaterialComponents.Caption">
+        <item name="android:textColor">@color/ic_tint_2</item>
+        <item name="android:textSize">12sp</item>
+        <item name="fontFamily">@font/ys_display_regular</item>
+        <item name="android:textFontWeight">400</item>
+        <item name="android:letterSpacing">0.04</item>
+        <item name="android:shadowRadius">0</item>
+        <item name="android:shadowColor">@color/background_menu</item>
     </style>
 </resources>

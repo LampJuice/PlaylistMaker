@@ -134,7 +134,12 @@ class SearchFragment : Fragment() {
     private fun openPlayer(song: SongUi) {
         val songJson = gson.toJson(song)
         val bundle = bundleOf(EXTRA_TRACK to songJson)
-        findNavController().navigate(R.id.action_searchFragment2_to_playerFragment2, bundle)
+        val navController = requireActivity()
+            .supportFragmentManager
+            .findFragmentById(R.id.rootFragmentContainerView)!!
+            .findNavController()
+        navController.navigate(R.id.action_searchFragment2_to_playerFragment2, bundle)
+        //findNavController().navigate(R.id.action_searchFragment2_to_playerFragment2, bundle)
     }
 
     override fun onDestroyView() {

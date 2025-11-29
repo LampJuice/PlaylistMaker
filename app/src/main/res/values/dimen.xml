@@ -17,4 +17,5 @@
     <dimen name="ph_text">19sp</dimen>
     <dimen name="ph_button_text">14sp</dimen>
     <dimen name="player_cover_size">312dp</dimen>
+    <dimen name="playlist_create">18dp</dimen>
 </resources>

@@ -7,9 +7,13 @@
     <color name="background_main">#1A1B22</color>
     <color name="background_menu">#1A1B22</color>
     <color name="text_menu">#FFFFFFFF</color>
+    <color name="text_b_s_pl">#FFFFFF</color>
     <color name="ic_tint">#FFFFFFFF</color>
     <color name="ic_tint_2">#FFFFFFFF</color>
     <color name="search_hint">#1A1B22</color>
     <color name="ic_bot_nav">#FFFFFFFF</color>
+    <color name="text_gray">#AEAFB4</color>
+    <color name="outline_playlist">#FFFFFF</color>
+    <color name="bottom_sheet_bar">#FFFFFF</color>
 
 </resources>

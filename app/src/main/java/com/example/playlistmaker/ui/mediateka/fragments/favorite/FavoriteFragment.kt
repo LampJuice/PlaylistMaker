@@ -1,4 +1,4 @@
-package com.example.playlistmaker.ui.mediateka.fragments
+package com.example.playlistmaker.ui.mediateka.fragments.favorite
 
 import android.content.Context
 import android.os.Bundle
