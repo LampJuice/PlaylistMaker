@@ -7,13 +7,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.PlaylstViewBinding
 import com.example.playlistmaker.domain.playlist.models.Playlist
-import com.example.playlistmaker.utils.pluralizeTracks
 
 class PlaylistViewHolder(private val binding: PlaylstViewBinding) :
     RecyclerView.ViewHolder(binding.root) {
     fun bind(item: Playlist) {
         binding.name.text = item.name
-        binding.desc.text = pluralizeTracks(item.songCount)
+        binding.desc.text = binding.root.context.resources.getQuantityString(R.plurals.tracks_count,item.songCount,item.songCount)
 
         if (item.coverPath == null) binding.cover.setImageResource(R.drawable.placeholder_45)
         else binding.cover.setImageURI(item.coverPath.toUri())

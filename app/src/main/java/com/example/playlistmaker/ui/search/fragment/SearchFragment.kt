@@ -78,7 +78,6 @@ class SearchFragment : Fragment() {
                 } else if (s.toString() != viewModel.lastQuery) {
                     viewModel.onSearchTextChanged(s.toString(), binding.searchEdittext.hasFocus())
                 }
-                //viewModel.onSearchTextChanged(s.toString(), binding.searchEdittext.hasFocus())
                 binding.clearText.visibility =
                     if (s.isNullOrEmpty()) View.INVISIBLE else View.VISIBLE
             }
@@ -139,7 +138,6 @@ class SearchFragment : Fragment() {
             .findFragmentById(R.id.rootFragmentContainerView)!!
             .findNavController()
         navController.navigate(R.id.action_searchFragment2_to_playerFragment2, bundle)
-        //findNavController().navigate(R.id.action_searchFragment2_to_playerFragment2, bundle)
     }
 
     override fun onDestroyView() {

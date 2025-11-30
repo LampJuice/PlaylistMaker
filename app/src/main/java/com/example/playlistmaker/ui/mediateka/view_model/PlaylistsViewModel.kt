@@ -5,7 +5,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.playlistmaker.domain.db.PlaylistInteractor
-import com.example.playlistmaker.domain.playlist.models.Playlist
 import kotlinx.coroutines.launch
 
 class PlaylistsViewModel(private val interactor: PlaylistInteractor) : ViewModel() {
@@ -25,7 +24,7 @@ class PlaylistsViewModel(private val interactor: PlaylistInteractor) : ViewModel
     }
 }
 
-sealed class PlaylistsState {
-    object Empty : PlaylistsState()
-    data class Content(val playlists: List<Playlist>) : PlaylistsState()
-}
+//sealed class PlaylistsState {
+//    object Empty : PlaylistsState()
+//    data class Content(val playlists: List<Playlist>) : PlaylistsState()
+//}

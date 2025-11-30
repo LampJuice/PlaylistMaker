@@ -25,8 +25,10 @@ class CreatePlaylistViewModel(private val interactor: PlaylistInteractor) : View
     }
 
     fun updateCover(path: String?) {
+        val path = path ?: return
         viewModelScope.launch {
-            val savedPath = interactor.saveCover(path!!)
+
+            val savedPath = interactor.saveCover(path)
             savedPath?.let {
                 plLiveData.postValue(plLiveData.value?.copy(coverPath = it))
             }
