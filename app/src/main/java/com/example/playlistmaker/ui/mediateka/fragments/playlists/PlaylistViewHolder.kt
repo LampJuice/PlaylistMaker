@@ -10,18 +10,13 @@ import com.example.playlistmaker.domain.playlist.models.Playlist
 
 class PlaylistViewHolder(private val binding: PlaylstViewBinding) :
     RecyclerView.ViewHolder(binding.root) {
-    fun bind(item: Playlist, onPlaylistClick: (Playlist) -> Unit) {
+    fun bind(item: Playlist) {
         binding.name.text = item.name
-        binding.desc.text = binding.root.context.resources.getQuantityString(
-            R.plurals.tracks_count,
-            item.songCount,
-            item.songCount
-        )
-
-        itemView.setOnClickListener { onPlaylistClick(item) }
+        binding.desc.text = binding.root.context.resources.getQuantityString(R.plurals.tracks_count,item.songCount,item.songCount)
 
         if (item.coverPath == null) binding.cover.setImageResource(R.drawable.placeholder_45)
         else binding.cover.setImageURI(item.coverPath.toUri())
+
     }
 
     companion object {

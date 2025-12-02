@@ -11,9 +11,4 @@ interface PlaylistRepository {
     suspend fun getPlaylistById(id: Int): Playlist?
     suspend fun saveSong(song: Song)
     suspend fun saveSongPlaylist(song: Song)
-    suspend fun getSongsForPlaylist(playlistId: Int): List<Song>
-    suspend fun getSavedSongsByIds(ids: List<Int>): List<Song>
-    suspend fun removeSongFromPlaylist(plId: Int, songId: Int)
-    suspend fun deletePlaylist(id: Int)
-    suspend fun deleteSongById(id: Int)
 }

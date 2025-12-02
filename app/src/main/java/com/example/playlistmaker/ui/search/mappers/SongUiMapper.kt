@@ -39,8 +39,7 @@ fun SongUi.toDomain(): Song {
         primaryGenreName = primaryGenreName ?: "",
         previewUrl = previewUrl ?: "",
         addedAt = addedAt ?: 0,
-        isFavorite = isLiked,
-        playlistId = 0
+        isFavorite = isLiked
     )
 }
 

@@ -32,8 +32,7 @@ class SongsRepositoryImpl(
                         it.primaryGenreName ?: "",
                         it.previewUrl ?: "",
                         0L,
-                        false,
-                        0
+                        false
                     )
                 }
                 emit(data)

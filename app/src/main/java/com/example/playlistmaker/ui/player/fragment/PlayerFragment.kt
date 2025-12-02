@@ -119,6 +119,7 @@ class PlayerFragment : Fragment() {
                 bundle
             )
 
+            //viewModel.onNewPlaylistClick()
             bottomSheetBehavior?.state = BottomSheetBehavior.STATE_HIDDEN
         }
 

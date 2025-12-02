@@ -4,7 +4,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.playlistmaker.domain.playlist.models.Playlist
 
-class PlaylistsAdapter(val onPlaylistClick: (Playlist) -> Unit) : RecyclerView.Adapter<PlaylistViewHolder>() {
+class PlaylistsAdapter : RecyclerView.Adapter<PlaylistViewHolder>() {
 
     var items: List<Playlist> = emptyList()
 
@@ -18,7 +18,7 @@ class PlaylistsAdapter(val onPlaylistClick: (Playlist) -> Unit) : RecyclerView.A
         holder: PlaylistViewHolder,
         position: Int
     ) {
-        holder.bind(items[position], onPlaylistClick)
+        holder.bind(items[position])
     }
 
     override fun getItemCount(): Int {

@@ -25,14 +25,14 @@ import com.google.gson.Gson
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-open class CreatePlaylistFragment : Fragment() {
+class CreatePlaylistFragment : Fragment() {
 
     private val gson: Gson by inject()
 
     private var _binding: FragmentCreatePlaylistBinding? = null
-    val binding get() = _binding!!
+    private val binding get() = _binding!!
 
-    open val viewModel: CreatePlaylistViewModel by viewModel()
+    private val viewModel: CreatePlaylistViewModel by viewModel()
     private var isDataChanged = false
 
     private var song: SongUi? = null
@@ -116,7 +116,7 @@ open class CreatePlaylistFragment : Fragment() {
         }
     }
 
-    open fun onBackPressed() {
+    private fun onBackPressed() {
         val state = viewModel.statePlLiveData.value
         val hasData = state?.name?.isNotBlank() == true ||
                 state?.description?.isNotBlank() == true ||

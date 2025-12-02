@@ -6,7 +6,6 @@ import com.example.playlistmaker.domain.db.PlaylistRepository
 import com.example.playlistmaker.domain.playlist.models.Playlist
 import com.example.playlistmaker.domain.search.models.Song
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.first
 
 class PlaylistInteractorImpl(
     private val repository: PlaylistRepository,
@@ -60,31 +59,5 @@ class PlaylistInteractorImpl(
 
     override suspend fun saveCover(uriString: String): String? {
         return fileStorage.savePlaylistCover(uriString)
-    }
-
-    override suspend fun getSongsForPlaylist(id: Int): List<Song> {
-        return repository.getSongsForPlaylist(id)
-    }
-
-    override suspend fun getSavedSongsByIds(ids: List<Int>): List<Song> {
-        return repository.getSavedSongsByIds(ids)
-    }
-
-    override suspend fun removeSongFromPlaylist(plId: Int, songId: Int) =
-        repository.removeSongFromPlaylist(plId, songId)
-
-    override suspend fun deletePlaylist(id: Int) {
-        repository.deletePlaylist(id)
-        repository.getPlaylistById(id)?.songIds?.forEach { songId ->
-            val allPlaylists = repository.getPlaylists().first()
-            val stillUsed = allPlaylists.any { it.songIds.contains(songId) }
-            if (!stillUsed) {
-                repository.deleteSongById(songId)
-            }
-        }
-    }
-
-    override suspend fun updatePlaylist(playlist: Playlist) {
-        repository.updatePlaylist(playlist)
     }
 }

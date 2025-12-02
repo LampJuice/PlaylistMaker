@@ -18,25 +18,7 @@ class SongDbMapper {
             song.trackTimeMillis.toString(),
             song.previewUrl,
             song.addedAt,
-            song.isFavorite,
-            song.playlistId
-        )
-    }
-    fun mapSaved(song: SavedSongEntity): Song {
-        return Song(
-            song.trackName,
-            song.artistName,
-            song.trackTime.toLong(),
-            song.albumCoverUrl,
-            song.id.toInt(),
-            song.albumName,
-            song.releaseYear,
-            song.country,
-            song.genre,
-            song.trackUrl,
-            song.addedAt,
-            song.isFavorite,
-            song.playlistId
+            song.isFavorite
         )
     }
 
@@ -70,8 +52,7 @@ class SongDbMapper {
             song.genre,
             song.trackUrl,
             song.addedAt,
-            song.isFavorite,
-            0
+            song.isFavorite
         )
     }
 }

@@ -15,7 +15,7 @@ class TrackViewHolder(private val binding: TrackViewBinding) :
     private val cornerRadiusPx =
         itemView.context.resources.getDimensionPixelSize(R.dimen.round_corners_cover)
 
-    fun bind(model: SongUi, onTrackClick: (SongUi) -> Unit, onTrackLongClick: (SongUi) -> Unit) {
+    fun bind(model: SongUi, onTrackClick: (SongUi) -> Unit) {
         binding.sourceName.text = model.trackName
         binding.sourceBand.text = model.artistName
         binding.sourceTime.text = model.trackTime
@@ -26,10 +26,6 @@ class TrackViewHolder(private val binding: TrackViewBinding) :
             .placeholder(R.drawable.placeholder_45)
             .into(binding.sourceImg)
         itemView.setOnClickListener { onTrackClick(model) }
-        itemView.setOnLongClickListener {
-            onTrackLongClick(model)
-            true
-        }
     }
 
     companion object {

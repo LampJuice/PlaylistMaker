@@ -26,9 +26,9 @@ class FavoriteFragment : Fragment() {
     private val binding get() = _binding!!
     private val viewModel: FavoriteViewModel by viewModel()
 
-    private val favoritesAdapter = TrackAdapter(
-        mutableListOf(), { song -> listener?.onTrackClicked(song) }, { song -> Unit }
-    )
+    private val favoritesAdapter = TrackAdapter(mutableListOf()) { song ->
+        listener?.onTrackClicked(song)
+    }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)

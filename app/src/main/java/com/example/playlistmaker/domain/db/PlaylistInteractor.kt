@@ -10,9 +10,4 @@ interface PlaylistInteractor {
     fun getPlaylists(): Flow<List<Playlist>>
     suspend fun getPlayListById(id: Int): Playlist?
     suspend fun saveCover(uriString: String): String?
-    suspend fun getSongsForPlaylist(id: Int): List<Song>
-    suspend fun getSavedSongsByIds(ids: List<Int>): List<Song>
-    suspend fun removeSongFromPlaylist(plId: Int, songId: Int)
-    suspend fun deletePlaylist(id: Int)
-    suspend fun updatePlaylist(playlist: Playlist)
 }
