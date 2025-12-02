@@ -1,5 +1,6 @@
 package com.example.playlistmaker.di
 
+import com.example.playlistmaker.ui.mediateka.view_model.CreatePlaylistViewModel
 import com.example.playlistmaker.ui.mediateka.view_model.FavoriteViewModel
 import com.example.playlistmaker.ui.mediateka.view_model.PlaylistsViewModel
 import com.example.playlistmaker.ui.player.view_model.PlayerViewModel
@@ -14,8 +15,9 @@ val UiModule = module {
     viewModel { SettingsViewModel(get(), get()) }
     viewModel { SearchViewModel(get(), get()) }
     viewModel { (scope: CoroutineScope) ->
-        PlayerViewModel(playerInteractor = get { parametersOf(scope) }, get())
+        PlayerViewModel(playerInteractor = get { parametersOf(scope) }, get(), get(), get())
     }
     viewModel { FavoriteViewModel(get()) }
-    viewModel { PlaylistsViewModel() }
+    viewModel { PlaylistsViewModel(get()) }
+    viewModel { CreatePlaylistViewModel(get()) }
 }

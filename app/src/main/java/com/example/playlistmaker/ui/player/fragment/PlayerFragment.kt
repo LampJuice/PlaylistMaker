@@ -4,9 +4,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
@@ -15,6 +17,7 @@ import com.example.playlistmaker.domain.player.models.PlayerState
 import com.example.playlistmaker.ui.player.view_model.PlayerViewModel
 import com.example.playlistmaker.ui.search.fragment.SearchFragment
 import com.example.playlistmaker.ui.search.models.SongUi
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.gson.Gson
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -23,6 +26,13 @@ import org.koin.core.parameter.parametersOf
 class PlayerFragment : Fragment() {
     private var _binding: FragmentPlayerBinding? = null
     private val binding get() = _binding!!
+
+    private var bottomSheetCallback: BottomSheetBehavior.BottomSheetCallback? = null
+    private var bottomSheetBehavior: BottomSheetBehavior<*>? = null
+
+    private val adapter = BottomSheetPlaylistsAdapter({ playlist ->
+        viewModel.addSongToPlaylist(playlist.id)
+    })
 
     private val viewModel: PlayerViewModel by viewModel {
         parametersOf(viewLifecycleOwner.lifecycleScope)
@@ -45,6 +55,21 @@ class PlayerFragment : Fragment() {
 
         viewModel.setTrack(song)
 
+        binding.playlistsRecycler.layoutManager = LinearLayoutManager(requireContext())
+        binding.playlistsRecycler.adapter = adapter
+
+        viewModel.playlist.observe(viewLifecycleOwner) { list ->
+            adapter.items = list
+            adapter.notifyDataSetChanged()
+
+        }
+
+        viewModel.closeBottomSheet.observe(viewLifecycleOwner) {
+            bottomSheetBehavior?.state = BottomSheetBehavior.STATE_HIDDEN
+        }
+
+
+
         viewModel.observeUiState.observe(viewLifecycleOwner) { state ->
             val iconPlay = when (state.playerState) {
                 PlayerState.PLAYING -> R.drawable.ic_pause_100
@@ -59,6 +84,44 @@ class PlayerFragment : Fragment() {
         }
 
         val cornerRadiusPx = resources.getDimensionPixelSize(R.dimen.corner_radius_player_cover)
+
+        bottomSheetBehavior = BottomSheetBehavior.from(binding.playlistBottomSheet).apply {
+            state = BottomSheetBehavior.STATE_HIDDEN
+        }
+
+        bottomSheetCallback = object : BottomSheetBehavior.BottomSheetCallback() {
+            override fun onStateChanged(p0: View, p1: Int) {
+                binding.overlay.visibility =
+                    if (p1 == BottomSheetBehavior.STATE_HIDDEN) View.GONE else View.VISIBLE
+            }
+
+            override fun onSlide(p0: View, p1: Float) {
+                binding.overlay.alpha = ((p1 + 1) / 2).coerceIn(0f, 1f)
+            }
+        }
+
+        bottomSheetBehavior?.addBottomSheetCallback(bottomSheetCallback!!)
+        binding.overlay.setOnClickListener {
+            bottomSheetBehavior?.state = BottomSheetBehavior.STATE_HIDDEN
+        }
+        binding.plCreateBtn.setOnClickListener {
+
+            bottomSheetBehavior?.state = BottomSheetBehavior.STATE_EXPANDED
+        }
+        binding.newPlaylistButton.setOnClickListener {
+            val track = viewModel.currentTrack ?: return@setOnClickListener
+            val trackJson = gson.toJson(track)
+            val bundle = Bundle().apply {
+                putString(SearchFragment.Companion.EXTRA_TRACK, trackJson)
+            }
+            findNavController().navigate(
+                R.id.action_playerFragment2_to_createPlaylistFragment,
+                bundle
+            )
+
+            //viewModel.onNewPlaylistClick()
+            bottomSheetBehavior?.state = BottomSheetBehavior.STATE_HIDDEN
+        }
 
         Glide.with(this)
             .load(song?.artworkUrl100?.replaceAfterLast('/', "512x512bb.jpg"))
@@ -82,7 +145,12 @@ class PlayerFragment : Fragment() {
                 )
             }
         }
+        viewModel.addToPlaylistStatus.observe(viewLifecycleOwner) { message ->
+            Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+
+        }
     }
+
 
     override fun onPause() {
         super.onPause()
@@ -90,8 +158,14 @@ class PlayerFragment : Fragment() {
     }
 
     override fun onDestroyView() {
+        bottomSheetCallback?.let { callback ->
+            bottomSheetBehavior?.removeBottomSheetCallback(callback)
+        }
+        bottomSheetCallback = null
+        bottomSheetBehavior = null
         super.onDestroyView()
         _binding = null
     }
+
 
 }

@@ -31,5 +31,23 @@
     <string name="playlist_new">Новый плейлист</string>
     <string name="tab_favorites">Избранные треки</string>
     <string name="tab_playlists">Плейлисты</string>
+    <string name="playlist_name">Название*</string>
+    <string name="playlist_description">Описание</string>
+    <string name="create">Создать</string>
+    <string name="add_to_pl">Добавить в плейлист</string>
+    <string name="added_to_pl">Добавлено в плейлист %1$s</string>
+    <string name="alrdy_added_to_pl">Трек уже добавлен в плейлист %1$s</string>
+    <string name="dialog_exit_title">Завершить создание плейлиста?</string>
+    <string name="dialog_exit_message">Все несохраненные данные будут потеряны</string>
+    <string name="dialog_exit_cancel">Отмена</string>
+    <string name="dialog_exit_confirm">Завершить</string>
+    <string name="pl_created">Плейлист "%1$s" создан</string>
+    <plurals name="tracks_count">
+        <item quantity="one">%d трек</item>
+        <item quantity="few">%d трека</item>
+        <item quantity="many">%d треков</item>
+        <item quantity="other">%d треков</item>
+    </plurals>
+
 
 </resources>

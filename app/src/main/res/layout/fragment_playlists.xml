@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+
     <com.google.android.material.button.MaterialButton
         android:id="@+id/new_playlist_button"
         android:layout_width="wrap_content"
@@ -21,8 +22,19 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toBottomOf="@id/new_playlist_button"
+        android:paddingHorizontal="12dp"
+        android:layout_marginBottom="@dimen/main_padding"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"/>
+
     <LinearLayout
-        android:id="@+id/PlaylistIsEmpty"
+        android:id="@+id/playlist_empty"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="110dp"

@@ -12,7 +12,7 @@ android {
     namespace = "com.example.playlistmaker"
     compileSdk = 35
 
-    buildFeatures{
+    buildFeatures {
         viewBinding = true
     }
 
@@ -46,6 +46,7 @@ android {
 }
 
 dependencies {
+    implementation(libs.material)
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.room.ktx)
     ksp(libs.androidx.room.compiler)

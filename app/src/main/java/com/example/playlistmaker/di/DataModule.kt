@@ -2,6 +2,7 @@ package com.example.playlistmaker.di
 
 import android.media.MediaPlayer
 import androidx.room.Room
+import com.example.playlistmaker.data.FileStorageClient
 import com.example.playlistmaker.data.NetworkClient
 import com.example.playlistmaker.data.ResourceProvider
 import com.example.playlistmaker.data.StorageClient
@@ -10,6 +11,7 @@ import com.example.playlistmaker.data.search.network.ITunesAPI
 import com.example.playlistmaker.data.search.network.RetrofitNetworkClient
 import com.example.playlistmaker.data.sharing.ExternalNavigatorImpl
 import com.example.playlistmaker.data.sharing.ResourceProviderImpl
+import com.example.playlistmaker.data.storage.FileStorageClientImpl
 import com.example.playlistmaker.data.storage.PrefsStorageClient
 import com.example.playlistmaker.domain.player.impl.PlayerInteractorImpl
 import com.example.playlistmaker.domain.search.models.Song
@@ -63,5 +65,9 @@ val dataModule = module {
         Room.databaseBuilder(androidContext(), AppDatabase::class.java, "database.db")
             .build()
     }
+    single<FileStorageClient> { FileStorageClientImpl(get()) }
+
+    single { get<AppDatabase>().playlistDao() }
+    single { get<AppDatabase>().savedSongDao() }
 
 }
