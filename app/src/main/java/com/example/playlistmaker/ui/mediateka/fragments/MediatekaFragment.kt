@@ -9,13 +9,15 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentMediatekaBinding
+import com.example.playlistmaker.domain.playlist.models.Playlist
 import com.example.playlistmaker.ui.mediateka.fragments.favorite.FavoriteFragment
+import com.example.playlistmaker.ui.mediateka.fragments.playlists.PlaylistsFragment
 import com.example.playlistmaker.ui.search.models.SongUi
 import com.google.android.material.tabs.TabLayoutMediator
 import com.google.gson.Gson
 import org.koin.android.ext.android.inject
 
-class MediatekaFragment : Fragment(), FavoriteFragment.Listener {
+class MediatekaFragment : Fragment(), FavoriteFragment.Listener, PlaylistsFragment.Listener {
 
     private val gson: Gson by inject()
     private var _binding: FragmentMediatekaBinding? = null
@@ -44,7 +46,6 @@ class MediatekaFragment : Fragment(), FavoriteFragment.Listener {
         tabMediator.attach()
     }
 
-
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
@@ -55,5 +56,12 @@ class MediatekaFragment : Fragment(), FavoriteFragment.Listener {
         val bundle = bundleOf(FavoriteFragment.EXTRA_TRACK to gson.toJson(song))
         findNavController().navigate(R.id.action_mediatekaFragment2_to_playerFragment2, bundle)
     }
+
+    override fun onPlaylistClicked(playlist: Playlist) {
+        val bundle = bundleOf(PlaylistsFragment.Companion.EXTRA_PLAYLIST to playlist.id)
+        findNavController().navigate(R.id.action_mediatekaFragment2_to_playlistScrFragment, bundle)
+
+    }
+
 
 }

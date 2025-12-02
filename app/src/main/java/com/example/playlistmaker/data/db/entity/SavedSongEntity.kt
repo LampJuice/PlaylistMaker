@@ -17,5 +17,6 @@ data class SavedSongEntity(
     val trackTime: String,
     val trackUrl: String,
     val addedAt: Long,
-    val isFavorite: Boolean
+    val isFavorite: Boolean,
+    val playlistId: Int
 )
