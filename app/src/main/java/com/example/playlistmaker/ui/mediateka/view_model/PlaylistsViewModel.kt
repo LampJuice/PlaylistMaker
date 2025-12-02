@@ -11,20 +11,20 @@ class PlaylistsViewModel(private val interactor: PlaylistInteractor) : ViewModel
     private val _state = MutableLiveData<PlaylistsState>()
     val state: LiveData<PlaylistsState> = _state
 
-    fun loadPlaylists() {
+    init {
+        observePlaylists()
+    }
+
+    private fun observePlaylists() {
         viewModelScope.launch {
-            interactor.getPlaylists()
-                .collect { list ->
-                    _state.postValue(
-                        if (list.isEmpty()) PlaylistsState.Empty
-                        else PlaylistsState.Content(list)
-                    )
-                }
+            interactor.getPlaylists().collect { list ->
+                _state.postValue(
+                    if (list.isEmpty()) PlaylistsState.Empty
+                    else PlaylistsState.Content(list)
+                )
+            }
         }
     }
+
 }
 
-//sealed class PlaylistsState {
-//    object Empty : PlaylistsState()
-//    data class Content(val playlists: List<Playlist>) : PlaylistsState()
-//}
