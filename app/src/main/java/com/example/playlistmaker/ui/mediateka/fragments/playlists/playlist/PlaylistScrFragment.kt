@@ -68,7 +68,7 @@ class PlaylistScrFragment : Fragment() {
 
         val playlistId = arguments?.getInt(PlaylistsFragment.Companion.EXTRA_PLAYLIST)
 
-        viewModel.setPlaylist(playlistId ?: 0)
+        viewModel.observePlaylist(playlistId ?: 0)
 
         viewModel.state.observe(viewLifecycleOwner) { state ->
             when (state) {

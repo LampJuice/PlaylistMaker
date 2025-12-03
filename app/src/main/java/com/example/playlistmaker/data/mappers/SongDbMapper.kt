@@ -5,7 +5,7 @@ import com.example.playlistmaker.data.db.entity.SongEntity
 import com.example.playlistmaker.domain.search.models.Song
 
 class SongDbMapper {
-    fun mapSaved(song: Song): SavedSongEntity {
+    fun mapSaved(song: Song,playlistId: Int): SavedSongEntity {
         return SavedSongEntity(
             song.trackId.toString(),
             song.artworkUrl100,
@@ -19,7 +19,7 @@ class SongDbMapper {
             song.previewUrl,
             song.addedAt,
             song.isFavorite,
-            song.playlistId
+            playlistId
         )
     }
     fun mapSaved(song: SavedSongEntity): Song {

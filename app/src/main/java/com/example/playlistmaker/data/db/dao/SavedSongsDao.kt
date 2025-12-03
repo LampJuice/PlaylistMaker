@@ -6,6 +6,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.example.playlistmaker.data.db.entity.SavedSongEntity
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface SavedSongsDao {
@@ -29,4 +30,10 @@ interface SavedSongsDao {
 
     @Query("SELECT * FROM saved_songs")
     suspend fun getSavedSongs(): List<SavedSongEntity>
+
+    @Query("SELECT * FROM saved_songs")
+    fun observeSavedSongs(): Flow<List<SavedSongEntity>>
+
+    @Query("SELECT * FROM saved_songs WHERE playlistId = :playlistId")
+    fun observeSongsForPlaylist(playlistId: Int): Flow<List<SavedSongEntity>>
 }

@@ -48,8 +48,8 @@ class PlaylistRepositoryImpl(
         songDao.insertSong(songDbMapper.map(song))
     }
 
-    override suspend fun saveSongPlaylist(song: Song) {
-        savedSongsDao.insertSong(songDbMapper.mapSaved(song))
+    override suspend fun saveSongPlaylist(song: Song, playlistId: Int) {
+        savedSongsDao.insertSong(songDbMapper.mapSaved(song,playlistId))
     }
 
     override suspend fun getSongsForPlaylist(playlistId: Int): List<Song> {
@@ -78,11 +78,29 @@ class PlaylistRepositoryImpl(
 
     override suspend fun deletePlaylist(id: Int) {
         val entity = playlistDao.getPlaylist(id) ?: return
+        val playlist = mapper.map(entity)
         playlistDao.deletePlaylist(entity)
+        playlist.songIds.forEach { cleanLeftOvers(it) }
+
     }
 
     override suspend fun deleteSongById(id: Int) {
         savedSongsDao.deleteById(id)
+    }
+
+    override fun observePlaylistById(id: Int): Flow<Playlist?> {
+        return playlistDao.observePlaylist(id).map { it?.let(mapper::map)}
+    }
+
+    override fun observeSavedSongs(): Flow<List<Song>> {
+        return savedSongsDao.observeSavedSongs().map { list->
+            list.map(songDbMapper::mapSaved)
+        }
+    }
+
+    override fun observeSongsForPlaylist(playlistId: Int): Flow<List<Song>> {
+        return savedSongsDao.observeSongsForPlaylist(playlistId)
+            .map { list -> list.map(songDbMapper::mapSaved) }
     }
 
     suspend fun cleanLeftOvers(songId: Int) {

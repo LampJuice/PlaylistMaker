@@ -22,7 +22,7 @@ class PlaylistInteractorImpl(
         val currentIds = playlistEntity.songIds.toMutableList()
         if (currentIds.contains(song.trackId)) return false
         currentIds.add(song.trackId)
-        repository.saveSongPlaylist(song)
+        repository.saveSongPlaylist(song, playlistId)
         repository.updatePlaylist(
             playlistEntity.copy(
                 songIds = currentIds,
@@ -86,5 +86,17 @@ class PlaylistInteractorImpl(
 
     override suspend fun updatePlaylist(playlist: Playlist) {
         repository.updatePlaylist(playlist)
+    }
+
+    override fun observePlaylist(id: Int): Flow<Playlist?> {
+        return repository.observePlaylistById(id)
+    }
+
+    override fun observeSavedSong(): Flow<List<Song>> {
+        return repository.observeSavedSongs()
+    }
+
+    override fun observeSongForPlaylist(playlistId: Int): Flow<List<Song>> {
+        return repository.observeSongsForPlaylist(playlistId)
     }
 }

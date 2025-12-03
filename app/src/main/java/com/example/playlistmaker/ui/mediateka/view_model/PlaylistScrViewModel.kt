@@ -12,6 +12,7 @@ import com.example.playlistmaker.domain.sharing.ExternalNavigator
 import com.example.playlistmaker.ui.search.mappers.toUi
 import com.example.playlistmaker.ui.search.models.SongUi
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -25,29 +26,29 @@ class PlaylistScrViewModel(
     private val _state = MutableLiveData<PlaylistScrState>()
     val state: LiveData<PlaylistScrState> = _state
 
-    fun setPlaylist(id: Int) {
-        _state.postValue(PlaylistScrState.Loading)
-        viewModelScope.launch(Dispatchers.IO) {
-            val playlist = playlistInteractor.getPlayListById(id)
-            if (playlist == null) {
-                _state.postValue(PlaylistScrState.Error)
-                return@launch
+    fun observePlaylist(id: Int) {
+        viewModelScope.launch {
+            combine(
+                playlistInteractor.observePlaylist(id),
+                playlistInteractor.observeSongForPlaylist(id)
+            ){playlist, songs ->
+                if (playlist == null){
+                    PlaylistScrState.Error
+                }else{
+                    val songUi = songs.map { it.toUi() }.reversed()
+                    val duration = SimpleDateFormat("mm", Locale.getDefault())
+                        .format(songs.sumOf { it.trackTimeMillis })
+
+                    PlaylistScrState.Content(
+                        playlist = playlist,
+                        song = songUi,
+                        duration = duration,
+                        trackCount = songs.size
+                    )
+                }
+            }.collect { state ->
+                _state.postValue(state)
             }
-
-            val songs = playlistInteractor.getSavedSongsByIds(playlist.songIds)
-            val songsUi = songs.map { it.toUi() }.reversed()
-
-            val totalMillis = songs.sumOf { it.trackTimeMillis }
-            val duration = SimpleDateFormat("mm", Locale.getDefault()).format(totalMillis)
-
-            _state.postValue(
-                PlaylistScrState.Content(
-                    playlist = playlist,
-                    song = songsUi,
-                    duration = duration,
-                    trackCount = songs.size
-                )
-            )
         }
     }
 
@@ -55,7 +56,6 @@ class PlaylistScrViewModel(
         val playlist = (state.value as? PlaylistScrState.Content)?.playlist ?: return
         viewModelScope.launch(Dispatchers.IO) {
             playlistInteractor.removeSongFromPlaylist(playlist.id, songId)
-            setPlaylist(playlist.id)
         }
     }
 
