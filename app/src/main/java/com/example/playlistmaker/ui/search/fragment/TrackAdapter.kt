@@ -6,7 +6,8 @@ import com.example.playlistmaker.ui.search.models.SongUi
 
 class TrackAdapter(
     private val tracks: MutableList<SongUi>,
-    val onTrackClick: (SongUi) -> Unit
+    val onTrackClick: (SongUi) -> Unit,
+    val onTrackLongClick: (SongUi) -> Unit
 ) : RecyclerView.Adapter<TrackViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TrackViewHolder =
         TrackViewHolder.from(parent)
@@ -16,7 +17,7 @@ class TrackAdapter(
     }
 
     override fun onBindViewHolder(holder: TrackViewHolder, position: Int) {
-        holder.bind(tracks[position], onTrackClick)
+        holder.bind(tracks[position], onTrackClick, onTrackLongClick)
 
     }
 

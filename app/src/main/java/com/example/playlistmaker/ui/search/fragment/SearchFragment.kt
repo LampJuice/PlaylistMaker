@@ -28,17 +28,24 @@ class SearchFragment : Fragment() {
     private val viewModel by viewModel<SearchViewModel>()
     private val gson: Gson by inject()
 
-    private val trackAdapter = TrackAdapter(mutableListOf()) { song ->
-        if (viewModel.onTrackClick(song)) {
-            openPlayer(song)
-        }
-    }
-    private val historyAdapter =
-        TrackAdapter(mutableListOf()) { song ->
+    private val trackAdapter = TrackAdapter(
+        mutableListOf(),
+        { song ->
             if (viewModel.onTrackClick(song)) {
                 openPlayer(song)
             }
-        }
+        },
+        { song ->
+        })
+    private val historyAdapter =
+        TrackAdapter(
+            mutableListOf(), { song ->
+                if (viewModel.onTrackClick(song)) {
+                    openPlayer(song)
+                }
+            },
+            { song -> })
+
 
     override fun onCreateView(
         inflater: LayoutInflater,

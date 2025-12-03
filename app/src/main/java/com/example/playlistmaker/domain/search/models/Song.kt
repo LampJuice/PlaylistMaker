@@ -12,5 +12,6 @@ data class Song(
     val primaryGenreName: String,
     val previewUrl: String,
     val addedAt: Long = 0L,
-    var isFavorite: Boolean = false
+    var isFavorite: Boolean = false,
+    val playlistId: Int
 )

@@ -145,6 +145,9 @@
 
         android:text="@string/create"
         android:textColor="@color/white"
+        android:fontFamily="@font/ys_display_medium"
+        android:letterSpacing="0"
+        android:textAllCaps="false"
         android:textSize="@dimen/text_regular"
         app:backgroundTint="@null"
         app:layout_constraintBottom_toBottomOf="parent"
