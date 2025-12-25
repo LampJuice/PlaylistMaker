@@ -83,8 +83,11 @@ class PlaybackButtonView @JvmOverloads constructor(
 
 
     fun setPlaying(isPlaying: Boolean) {
-        state = if (isPlaying) State.PAUSE else State.PLAY
-        invalidate()
+        val newState = if (isPlaying) State.PAUSE else State.PLAY
+        if (state != newState) {
+            state = newState
+            invalidate()
+        }
     }
 
 
