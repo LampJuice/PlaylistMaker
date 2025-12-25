@@ -71,11 +71,9 @@ class PlayerFragment : Fragment() {
 
 
         viewModel.observeUiState.observe(viewLifecycleOwner) { state ->
-            val iconPlay = when (state.playerState) {
-                PlayerState.PLAYING -> R.drawable.ic_pause_100
-                else -> R.drawable.ic_play_100
-            }
-            binding.playButton.setImageResource(iconPlay)
+            binding.playbackButton.setPlaying(
+                state.playerState == PlayerState.PLAYING
+            )
             val iconLike =
                 if (state.isLiked) R.drawable.ic_like_pressed_51 else R.drawable.ic_like_51
             binding.likeButton.setImageResource(iconLike)
@@ -137,7 +135,7 @@ class PlayerFragment : Fragment() {
             artistName.text = song?.artistName
             time2.text = song?.trackTime
 
-            playButton.setOnClickListener { viewModel.onPlayPauseClick() }
+            playbackButton.onClick = { viewModel.onPlayPauseClick() }
             likeButton.setOnClickListener { viewModel.onLikeClick() }
             backArrow.setOnClickListener {
                 findNavController().popBackStack(
