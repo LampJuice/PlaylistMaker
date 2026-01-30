@@ -1,6 +1,5 @@
 package com.example.playlistmaker.di
 
-import android.media.MediaPlayer
 import androidx.room.Room
 import com.example.playlistmaker.data.FileStorageClient
 import com.example.playlistmaker.data.NetworkClient
@@ -13,12 +12,10 @@ import com.example.playlistmaker.data.sharing.ExternalNavigatorImpl
 import com.example.playlistmaker.data.sharing.ResourceProviderImpl
 import com.example.playlistmaker.data.storage.FileStorageClientImpl
 import com.example.playlistmaker.data.storage.PrefsStorageClient
-import com.example.playlistmaker.domain.player.impl.PlayerInteractorImpl
 import com.example.playlistmaker.domain.search.models.Song
 import com.example.playlistmaker.domain.sharing.ExternalNavigator
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import kotlinx.coroutines.CoroutineScope
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
@@ -26,7 +23,6 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 val dataModule = module {
-    factory { MediaPlayer() }
     single { Gson() }
     single { get<AppDatabase>().songDao() }
 
@@ -59,7 +55,6 @@ val dataModule = module {
     single<NetworkClient> { RetrofitNetworkClient(get()) }
     single<ExternalNavigator> { ExternalNavigatorImpl(get()) }
     single<ResourceProvider> { ResourceProviderImpl(get()) }
-    factory { (scope: CoroutineScope) -> PlayerInteractorImpl(get(), scope) }
 
     single {
         Room.databaseBuilder(androidContext(), AppDatabase::class.java, "database.db")

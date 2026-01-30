@@ -8,22 +8,23 @@ import com.example.playlistmaker.R
 import com.example.playlistmaker.data.ResourceProvider
 import com.example.playlistmaker.domain.db.FavoritesInteractor
 import com.example.playlistmaker.domain.db.PlaylistInteractor
-import com.example.playlistmaker.domain.player.PlayerInteractor
 import com.example.playlistmaker.domain.player.models.PlayerState
 import com.example.playlistmaker.domain.playlist.models.Playlist
+import com.example.playlistmaker.service.PlayerController
 import com.example.playlistmaker.ui.search.mappers.toDomain
 import com.example.playlistmaker.ui.search.models.SongUi
 import com.example.playlistmaker.ui.settings.SingleLiveEvent
-import com.example.playlistmaker.utils.toMinutesAndSeconds
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class PlayerViewModel(
-    private val playerInteractor: PlayerInteractor,
     private val favoritesInteractor: FavoritesInteractor,
     private val playlistInteractor: PlaylistInteractor,
     private val resourceProvider: ResourceProvider
 ) : ViewModel() {
+
+    private var isPlayerScreenVisible = false
+
     private val playerUiState = MutableLiveData(PlayerUiState())
     val observeUiState: LiveData<PlayerUiState> = playerUiState
 
@@ -36,28 +37,65 @@ class PlayerViewModel(
     private val _closeBottomSheet = SingleLiveEvent<Unit>()
     val closeBottomSheet: LiveData<Unit> = _closeBottomSheet
 
+    private var playerController: PlayerController? = null
+
     var currentTrack: SongUi? = null
     private var currentTrackUrl: String? = null
 
 
     init {
-        playerInteractor.onStateChange = { state ->
-            val current = playerUiState.value ?: PlayerUiState()
-            playerUiState.postValue(current.copy(playerState = state))
-        }
-        playerInteractor.onUpdateTime = { time ->
-            val current = playerUiState.value ?: PlayerUiState()
-            if (time == 0 || current.playerState != PlayerState.DEFAULT) {
-                playerUiState.postValue(current.copy(playTime = time.toMinutesAndSeconds()))
-            }
-
-        }
         viewModelScope.launch {
             playlistInteractor.getPlaylists().collect { list ->
                 _playlists.postValue(list)
             }
         }
     }
+
+    fun setPlayerController(controller: PlayerController) {
+        playerController = controller
+
+        viewModelScope.launch {
+            controller.playerState.collect { state ->
+                if (state != PlayerState.PLAYING) {
+                    playerController?.stopForegroundMode()
+                }
+            }
+        }
+
+        if (isPlayerScreenVisible) {
+            playerController?.stopForegroundMode()
+        }
+    }
+
+    fun onPlayPauseClick() {
+        when (playerController?.playerState?.value) {
+            PlayerState.DEFAULT -> currentTrack?.let {
+                playerController?.prepareAndPlay(
+                    it.previewUrl.orEmpty()
+                )
+            }
+
+            PlayerState.PLAYING -> playerController?.pause()
+            PlayerState.PAUSED, PlayerState.PREPARED -> playerController?.play()
+            else -> Unit
+        }
+    }
+
+    fun onScreenResumed() {
+        isPlayerScreenVisible = true
+        playerController?.stopForegroundMode()
+
+
+    }
+
+    fun onScreenStopped() {
+        isPlayerScreenVisible = false
+
+        if (playerController?.playerState?.value == PlayerState.PLAYING) {
+            playerController?.startForegroundMode()
+        }
+    }
+
 
     fun setTrack(track: SongUi) {
         currentTrackUrl = track.previewUrl
@@ -70,9 +108,11 @@ class PlayerViewModel(
         }
     }
 
-    fun onPlayPauseClick() {
-        currentTrackUrl?.let { playerInteractor.playbackControl(it) }
+
+    fun onScreenClosed() {
+        playerController?.pause()
     }
+
 
     fun onLikeClick() {
         val track = currentTrack ?: return
@@ -88,15 +128,6 @@ class PlayerViewModel(
         val updated = playerUiState.value ?: PlayerUiState()
         playerUiState.postValue(updated.copy(isLiked = !isCurrentlyLiked))
         currentTrack = track.copy(isLiked = !isCurrentlyLiked)
-    }
-
-    override fun onCleared() {
-        super.onCleared()
-        playerInteractor.release()
-    }
-
-    fun onPause() {
-        playerInteractor.pause()
     }
 
     fun addSongToPlaylist(playlistId: Int) {

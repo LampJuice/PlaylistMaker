@@ -1,6 +1,11 @@
 package com.example.playlistmaker.ui.player.fragment
 
+import android.content.ComponentName
+import android.content.Context
+import android.content.Intent
+import android.content.ServiceConnection
 import android.os.Bundle
+import android.os.IBinder
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,11 +19,14 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentPlayerBinding
 import com.example.playlistmaker.domain.player.models.PlayerState
+import com.example.playlistmaker.service.PlayerService
 import com.example.playlistmaker.ui.player.view_model.PlayerViewModel
 import com.example.playlistmaker.ui.search.fragment.SearchFragment
 import com.example.playlistmaker.ui.search.models.SongUi
+import com.example.playlistmaker.utils.toMinutesAndSeconds
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.gson.Gson
+import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
@@ -30,6 +38,31 @@ class PlayerFragment : Fragment() {
     private var bottomSheetCallback: BottomSheetBehavior.BottomSheetCallback? = null
     private var bottomSheetBehavior: BottomSheetBehavior<*>? = null
 
+    private var playerService: PlayerService? = null
+    private var isBound = false
+
+    private val serviceConnection = object : ServiceConnection {
+        override fun onServiceConnected(
+            name: ComponentName?,
+            service: IBinder?
+        ) {
+            val serviceBinder = service as PlayerService.PlayerBinder
+            playerService = serviceBinder.getService()
+            isBound = true
+
+            viewModel.setPlayerController(playerService!!)
+
+            observeService()
+        }
+
+        override fun onServiceDisconnected(name: ComponentName?) {
+            playerService = null
+            isBound = false
+
+        }
+
+    }
+
     private val adapter = BottomSheetPlaylistsAdapter({ playlist ->
         viewModel.addSongToPlaylist(playlist.id)
     })
@@ -38,6 +71,11 @@ class PlayerFragment : Fragment() {
         parametersOf(viewLifecycleOwner.lifecycleScope)
     }
     private val gson: Gson by inject()
+    override fun onStart() {
+        super.onStart()
+        viewModel.onScreenResumed()
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -71,14 +109,10 @@ class PlayerFragment : Fragment() {
 
 
         viewModel.observeUiState.observe(viewLifecycleOwner) { state ->
-            binding.playbackButton.setPlaying(
-                state.playerState == PlayerState.PLAYING
-            )
             val iconLike =
                 if (state.isLiked) R.drawable.ic_like_pressed_51 else R.drawable.ic_like_51
             binding.likeButton.setImageResource(iconLike)
 
-            binding.playTime.text = state.playTime
         }
 
         val cornerRadiusPx = resources.getDimensionPixelSize(R.dimen.corner_radius_player_cover)
@@ -135,7 +169,10 @@ class PlayerFragment : Fragment() {
             artistName.text = song?.artistName
             time2.text = song?.trackTime
 
-            playbackButton.onClick = { viewModel.onPlayPauseClick() }
+            playbackButton.onClick = {
+                viewModel.onPlayPauseClick()
+
+            }
             likeButton.setOnClickListener { viewModel.onLikeClick() }
             backArrow.setOnClickListener {
                 findNavController().popBackStack(
@@ -144,14 +181,23 @@ class PlayerFragment : Fragment() {
         }
         viewModel.addToPlaylistStatus.observe(viewLifecycleOwner) { message ->
             Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
-
         }
+        val intent = Intent(requireContext(), PlayerService::class.java).apply {
+            putExtra("EXTRA_ARTIST", song.artistName)
+            putExtra("EXTRA_TITLE", song.trackName)
+        }
+        requireContext().bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE)
     }
-
 
     override fun onPause() {
         super.onPause()
-        viewModel.onPause()
+    }
+
+    override fun onStop() {
+        super.onStop()
+
+        viewModel.onScreenStopped()
+
     }
 
     override fun onDestroyView() {
@@ -160,8 +206,34 @@ class PlayerFragment : Fragment() {
         }
         bottomSheetCallback = null
         bottomSheetBehavior = null
+
+        if (isBound) {
+            requireContext().unbindService(serviceConnection)
+            isBound = false
+        }
+        viewModel.onScreenClosed()
+
         super.onDestroyView()
         _binding = null
+    }
+
+
+    private fun observeService() {
+        lifecycleScope.launch {
+            playerService?.playerState?.collect { state ->
+                binding.playbackButton.setPlaying(state == PlayerState.PLAYING)
+            }
+
+        }
+        lifecycleScope.launch {
+            playerService?.currentTime?.collect { time ->
+                binding.playTime.text = time.toMinutesAndSeconds()
+            }
+        }
+    }
+
+    companion object{
+
     }
 
 

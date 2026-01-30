@@ -17,7 +17,11 @@ val UiModule = module {
     viewModel { SettingsViewModel(get(), get()) }
     viewModel { SearchViewModel(get(), get()) }
     viewModel { (scope: CoroutineScope) ->
-        PlayerViewModel(playerInteractor = get { parametersOf(scope) }, get(), get(), get())
+        PlayerViewModel(
+            get(),
+            get(),
+            get()
+        )
     }
     viewModel { FavoriteViewModel(get()) }
     viewModel { PlaylistsViewModel(get()) }
