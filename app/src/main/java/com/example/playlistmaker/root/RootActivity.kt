@@ -1,8 +1,13 @@
 package com.example.playlistmaker.root
 
+import android.Manifest
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.example.playlistmaker.R
@@ -38,6 +43,22 @@ class RootActivity : AppCompatActivity() {
                     bottomNavigationView.visibility = View.VISIBLE
                     binding.bottomNavigationViewBorder.visibility = View.VISIBLE
                 }
+            }
+        }
+
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
+            if(ContextCompat.checkSelfPermission(
+                this,
+                Manifest.permission.POST_NOTIFICATIONS
+
+            ) != PackageManager.PERMISSION_GRANTED
+                ){
+                ActivityCompat.requestPermissions(
+                    this,
+                    arrayOf(Manifest.permission.POST_NOTIFICATIONS),
+                    1
+                )
+
             }
         }
 

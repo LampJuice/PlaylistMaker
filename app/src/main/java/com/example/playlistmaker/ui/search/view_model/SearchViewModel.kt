@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.playlistmaker.domain.search.NoNetworkException
 import com.example.playlistmaker.domain.search.SearchHistoryInteractor
 import com.example.playlistmaker.domain.search.SongsInteractor
 import com.example.playlistmaker.domain.search.models.Song
@@ -105,8 +106,10 @@ class SearchViewModel(
                             searchLiveData.value = SearchUIState.ShowSearchResults(songUi.toList())
                         }
                     }
-            } catch (e: Exception) {
+            } catch (e: NoNetworkException) {
                 searchLiveData.value = SearchUIState.ShowNoNetworkPlaceholder
+            } catch (e: Exception){
+                searchLiveData.value = SearchUIState.ShowEmptyPlaceholder
             }
 
         }
