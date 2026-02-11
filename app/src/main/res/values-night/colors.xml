@@ -15,5 +15,6 @@
     <color name="text_gray">#AEAFB4</color>
     <color name="outline_playlist">#FFFFFF</color>
     <color name="bottom_sheet_bar">#FFFFFF</color>
+    <color name="search_field">#FFFFFF</color>
 
 </resources>

@@ -90,6 +90,21 @@ class SearchViewModel(
         }
     }
 
+    fun loadHistoryOnStart(){
+        if (lastQuery.isNullOrEmpty()) {
+            historyInteractor.getHistory(object : SearchHistoryInteractor.HistoryConsumer {
+                override fun consume(searchHistory: List<Song>?) {
+                    if (!searchHistory.isNullOrEmpty()) {
+                        val historyUi = searchHistory.map { it.toUi() }
+                        searchLiveData.postValue(SearchUIState.ShowHistory(historyUi))
+                    } else {
+                        searchLiveData.postValue(SearchUIState.Initial)
+                    }
+                }
+
+            })}
+    }
+
     fun performSearch(query: String) {
         searchLiveData.postValue(SearchUIState.Loading)
         viewModelScope.launch {
