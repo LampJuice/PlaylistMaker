@@ -28,7 +28,13 @@ class MediatekaFragment : Fragment(), FavoriteFragment.Listener, PlaylistsFragme
     ): View? {
         return ComposeView(requireContext()).apply {
             setContent {
-                MediatekaScreen(fragment = this@MediatekaFragment)
+                MediatekaScreen(
+                    onTrackClick = { onTrackClicked(it) },
+                    onPlaylistClick = { onPlaylistClicked(it) },
+                    onCreatePlaylistClick = {
+                        findNavController().navigate(R.id.action_mediatekaFragment2_to_createPlaylistFragment)
+                    }
+                )
             }
         }
     }

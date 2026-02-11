@@ -66,10 +66,10 @@ fun SearchScreen(
         viewModel.loadHistoryOnStart()
     }
 
+    val isClearEvent = state is SearchUIState.ClearInput
 
-
-    LaunchedEffect(state) {
-        if (state is SearchUIState.ClearInput) {
+    LaunchedEffect(isClearEvent) {
+        if (isClearEvent) {
             query = ""
             focusManager.clearFocus()
             keyboard?.hide()

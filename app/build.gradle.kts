@@ -78,6 +78,7 @@ dependencies {
     implementation(libs.androidx.fragment.ktx)
 
     implementation(libs.koin.android)
+    implementation(libs.koin.compose)
 
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
     implementation(libs.androidx.lifecycle.livedata.ktx)

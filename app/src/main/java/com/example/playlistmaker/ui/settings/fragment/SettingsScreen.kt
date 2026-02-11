@@ -11,7 +11,7 @@ import androidx.compose.material.Switch
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
@@ -24,6 +24,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.Observer
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.example.playlistmaker.R
 import com.example.playlistmaker.domain.sharing.models.EmailData
 import com.example.playlistmaker.ui.compose.ScreenTitle
@@ -39,16 +41,24 @@ fun SettingsScreen(
 ) {
     val isDark by viewModel.observeDarkTheme.observeAsState(false)
 
-    val event by viewModel.observeEvents.observeAsState()
+    val lifecycleOwner = LocalLifecycleOwner.current
 
-    LaunchedEffect(event) {
-        when (val e = event) {
-            is SettingsEvent.ContactSupport -> onSupport(e.data)
-            is SettingsEvent.OpenAgreement -> onAgreement(e.link)
-            is SettingsEvent.ShareApp -> onShare(e.link)
-            null -> Unit
+    DisposableEffect(lifecycleOwner) {
+        val observer = Observer<SettingsEvent> { e ->
+            when (e) {
+                is SettingsEvent.ContactSupport -> onSupport(e.data)
+                is SettingsEvent.OpenAgreement -> onAgreement(e.link)
+                is SettingsEvent.ShareApp -> onShare(e.link)
+
+            }
+        }
+        viewModel.observeEvents.observe(lifecycleOwner, observer)
+
+        onDispose {
+            viewModel.observeEvents.removeObserver(observer)
         }
     }
+
 
     Column(
         modifier = Modifier
