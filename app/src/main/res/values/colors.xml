@@ -20,5 +20,6 @@
     <color name="outline_playlist">#AEAFB4</color>
     <color name="tint">#99000000</color>
     <color name="bottom_sheet_bar">#E6E8EB</color>
+    <color name="search_field">#E6E8EB</color>
 
 </resources>
